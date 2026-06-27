@@ -1,0 +1,246 @@
+MODULE BREAKDOWN
+1. CLIENT PORTAL - The Client Portal will serve as the client-facing operational dashboard where clients can manage their offshore staff, review billing, approve leaves, access contracts, and upload training materials.
+	Client Dashboard
+	- View active staff assigned to the client
+	- Attendance and time tracking overview
+	- Leave request approvals
+	- Payroll and billing summaries
+	- Access invoices and receipts
+	- Access contracts and agreements
+	- Company announcements and updates
+	- Uploaded SOPs and training materials
+	- Staff Management
+
+	Clients can:
+	- Approve or reject leave requests
+	- Monitor attendance and Hubstaff activity
+	- Review staff productivity reports
+	- Request staff replacements
+	- Request additional hires
+	- Submit staff performance evaluations
+	
+	Billing Module
+	- Automatic invoice generation based on:
+	- Hourly rate
+	- Monthly salary
+	- Overtime
+	- Holiday pay
+
+	Benefits
+	- Client-specific markups
+	Example Invoice Breakdown [Staff, Hours, Rate, Total] -> [Maria Santos, 160, $10/hr, $1600]
+
+	Billing Features
+	- Auto-generated PDF invoices
+	- Stripe payment integration
+	- Payment history tracking
+	- Due date reminders
+	- Downloadable billing statements
+	- Client Contract Repository
+
+	Store and manage:
+	- Master Service Agreements (MSA)
+	- NDAs
+	- HIPAA Business Associate Agreements (BAA)
+	- Statements of Work (SOW)
+	- Staffing agreements
+
+	Future enhancement:
+	- E-signature support
+	- Training & SOP Uploads
+	- Clients can upload:
+	- SOP documents
+	- Training PDFs
+	- Loom or training videos
+	- Onboarding guides
+	- Workflow instructions
+	- Training materials can be assigned directly to employees.
+
+
+2. EMPLOYEE DASHBOARD - The Employee Dashboard will serve as the workforce portal where employees can access their information, payslips, training, schedules, and profiling status.
+	Employee Profile
+	Store and manage:
+	- Resume
+	- Government IDs
+	- Emergency contacts
+	- Contracts
+	- Equipment assignment
+	- Skills and certifications
+	- HIPAA training records
+	- Employment history
+	- Payslip Module
+
+	Employees can:
+	- Download payslips
+	- View payroll history
+	- Track deductions
+	- View bonuses and incentives
+	- Review salary summaries
+	- Employee Reprofile System
+
+	Employees who become:
+	- Floating
+	- Partially available
+	- Removed from a client
+	- Open for reassignment
+	- Can mark themselves as: “Available for Reprofile”
+
+	Recruitment and Admin can:
+	- View available employees first
+	- Match employees to open client positions
+	- Reduce downtime and staffing losses
+	- Employee Resume Repository
+
+	Employees can:
+	- Update resumes
+	- Upload certifications
+	- Maintain employment documents
+	- Store portfolios or work samples
+	- Employee Courses / LMS
+
+	Training and learning system for:
+	- HIPAA Compliance
+	- Dental terminology
+	- Insurance verification
+	- Medical billing
+	- Customer service
+	- Call handling
+	- Internal VSP processes
+
+	LMS Features
+	- Course tracking
+	- Quiz scores
+	- Completion certificates
+	- Training status monitoring
+	- Required course assignments
+	- Salary Disbursement Module
+	Features:
+	- Payroll summaries
+	- Salary release tracking
+	- Bank or wallet information
+	- Payroll export support
+	- Future integrations:
+	- Wise
+	- Payoneer
+	- GCash
+	- Direct bank transfer APIs
+
+
+3. ADMIN PANEL- The Admin Panel will serve as the central operational control center for VSP management, recruitment, payroll, communication, and compliance.
+	Recruitment Dashboard
+	Recruitment pipeline stages:
+	- Applied
+	- Initial Screening
+	- Assessment
+	- Interview
+	- Client Interview
+	- Hired
+	- Pool
+	- Reprofile
+	- Recruitment Features
+	- Resume database
+	- Applicant tracking
+	- Interview scheduling
+	- Recruitment analytics
+	- Applicant notes and evaluations
+	- Automated status updates
+	- Employee Communication System
+	- Internal communication tools for:
+	- Payroll announcements
+	- Emergency notifications
+	- Compliance reminders
+	- Operational updates
+	- Internet/power outage reporting
+
+	Features
+	- Announcement acknowledgments
+	- Department-specific messaging
+	- Company-wide notices
+	- Compliance Module
+
+	Track and manage:
+	- HIPAA agreements
+	- NDA expiration dates
+	- Required trainings
+	- Device compliance checks
+	- Internet redundancy checks
+	- Quarterly audit compliance
+	- Employee policy acknowledgments
+
+
+4. HUBSTAFF INTEGRATION - Integration with Hubstaff to synchronize:
+	- Attendance
+	- Hours worked
+	- Productivity tracking
+	- Screenshots
+	- Activity levels
+	- Project assignments
+	- Automation Features
+	- Automatic payroll calculations
+	- Client invoice generation
+	- Utilization reports
+	- Attendance monitoring
+
+
+5. STRIPE INTEGRATION
+	Stripe integration for:
+	- Client invoice payments
+	- Subscription billing
+	- Auto-pay functionality
+	- Payment reminders
+	- Online receipts
+	- Features
+	- Recurring invoices
+	- Payment tracking
+	- Failed payment notifications
+	- Downloadable receipts
+
+
+6. HIRING PORTAL - Public-facing recruitment and staffing portal.
+	- Employer Features
+	
+	Clients can:
+	- Submit staffing requests
+	- Request consultations or demos
+	- Upload job requirements
+	- Track hiring requests
+	- Applicant Features
+	
+	Applicants can:
+	- Apply online
+	- Upload resumes
+	- Complete assessments
+	- Schedule interviews
+	- Track application status
+
+
+7. FLOATING BENCH MANAGEMENT SYSTEM
+	A dedicated system for managing:
+	- Floating employees
+	- Available staff
+	- Cross-trained employees
+	- Partial availability
+	- Backup staffing
+
+	Features
+	- Staff availability tracking
+	- Skill matching
+	- Rapid reassignment workflows
+	- Bench utilization analytics
+
+
+8. CLIENT REPLACEMENT REQUEST SYSTEM
+	Clients can:
+	- Submit replacement requests
+	- Log performance concerns
+	- Request emergency coverage
+	- Initiate transitions
+	- Workflow Features
+	- HR notifications
+	- Transition tracking
+	- Incident documentation
+	- Replacement assignment workflow
+
+
+
+

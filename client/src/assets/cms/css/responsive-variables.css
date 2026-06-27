@@ -1,0 +1,627 @@
+/* ============================================== */
+/* responsive-variables.css                        */
+/* CSS-Variable Cascading Architecture             */
+/* Blocks & Sections: base + hover + responsive    */
+/* ============================================== */
+
+/* =================== */
+/* BLOCK-LEVEL STYLES  */
+/* =================== */
+
+/* Base block styles using CSS variables */
+/* Use doubled selector for specificity to beat legacy webpages.css rules */
+.seczone-block.seczone-block,
+.seczone-layout.seczone-layout {
+    /* ------------------------------------------------------------------ */
+    /* INHERITANCE ISOLATION                                                */
+    /* CSS custom properties cascade down the DOM by default (unlike       */
+    /* regular CSS properties). Without these resets, a parent block's     */
+    /* inline --b-margin / --b-padding / etc. would leak into every child  */
+    /* block, making child margins appear even when no child margin is set. */
+    /* Declaring each variable as `initial` here breaks the cascade chain. */
+    /* Each block's own inline style (from buildBlockVars) still wins.     */
+    /* Typography vars (--b-color, --b-font-size, etc.) are intentionally  */
+    /* left out — their fallback `inherit` follows normal CSS text rules.  */
+    /* ------------------------------------------------------------------ */
+    --b-margin: initial;
+    --b-padding: initial;
+    --b-width: initial;
+    --b-height: initial;
+    --b-gap: initial;
+    --b-bg-color: initial;
+    --b-layout-bg-color: initial;
+    --b-border-width: initial;
+    --b-border-style: initial;
+    --b-border-color: initial;
+    --b-border-radius: initial;
+    --b-box-shadow: initial;
+    --b-bg-image: initial;
+    --b-bg-overlay: initial;
+    --b-bg-opacity: initial;
+    --b-bg-position: initial;
+    --b-bg-repeat: initial;
+    --b-bg-size: initial;
+
+    /* Layout properties resets */
+    --b-justify-content: initial;
+    --b-flex-direction: initial;
+    --b-align-items: initial;
+    --b-flex-wrap: initial;
+
+    /* Tablet responsive resets */
+    --b-tablet-margin: initial;
+    --b-tablet-padding: initial;
+    --b-tablet-width: initial;
+    --b-tablet-height: initial;
+    --b-tablet-gap: initial;
+    --b-tablet-bg-color: initial;
+    --b-tablet-layout-bg-color: initial;
+    --b-tablet-border-width: initial;
+    --b-tablet-border-style: initial;
+    --b-tablet-border-color: initial;
+    --b-tablet-border-radius: initial;
+    --b-tablet-box-shadow: initial;
+    --b-tablet-justify-content: initial;
+    --b-tablet-flex-direction: initial;
+    --b-tablet-align-items: initial;
+    --b-tablet-flex-wrap: initial;
+
+    /* Mobile responsive resets */
+    --b-mobile-margin: initial;
+    --b-mobile-padding: initial;
+    --b-mobile-width: initial;
+    --b-mobile-height: initial;
+    --b-mobile-gap: initial;
+    --b-mobile-bg-color: initial;
+    --b-mobile-layout-bg-color: initial;
+    --b-mobile-border-width: initial;
+    --b-mobile-border-style: initial;
+    --b-mobile-border-color: initial;
+    --b-mobile-border-radius: initial;
+    --b-mobile-box-shadow: initial;
+    --b-mobile-justify-content: initial;
+    --b-mobile-flex-direction: initial;
+    --b-mobile-align-items: initial;
+    --b-mobile-flex-wrap: initial;
+
+    text-align: var(--b-text-align, inherit);
+    color: var(--b-color, inherit);
+    font-size: var(--b-font-size, inherit);
+    font-weight: var(--b-font-weight, inherit);
+    font-style: var(--b-font-style, inherit);
+    text-decoration: var(--b-text-decoration, inherit);
+    margin: var(--b-margin, 0);
+    padding: var(--b-padding, 0);
+    border-radius: var(--b-border-radius, 0);
+    background-color: var(--b-bg-color, transparent);
+    background-image: var(--b-bg-image, none);
+    background-position: var(--b-bg-position, center);
+    background-repeat: var(--b-bg-repeat, no-repeat);
+    background-size: var(--b-bg-size, cover);
+    width: var(--b-width, auto);
+    height: var(--b-height, auto);
+    border-width: var(--b-border-width, 0);
+    border-style: var(--b-border-style, none);
+    border-color: var(--b-border-color, transparent);
+    border-radius: var(--b-border-radius, 0);
+    box-shadow: var(--b-box-shadow, none);
+}
+
+/* Background overlay via pseudo-element (replaces JS gradient composition) */
+.seczone-block.seczone-block,
+.seczone-layout.seczone-layout {
+    position: relative;
+}
+.seczone-block.seczone-block::before,
+.seczone-layout.seczone-layout::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--b-bg-overlay, transparent);
+    opacity: var(--b-bg-opacity, 0);
+    pointer-events: none;
+    z-index: 0;
+}
+.seczone-block.seczone-block > *:not(.resize-handle-right):not(.resize-handle-bottom):not(.resize-handle-corner):not(.resize-handle-top):not(.resize-handle-left):not(.resize-handle-topLeft):not(.resize-handle-topRight):not(.resize-handle-bottomLeft):not(.section-resize-handle):not(span.resize-handle-dots),
+.seczone-layout.seczone-layout > *:not(.resize-handle-right):not(.resize-handle-bottom):not(.resize-handle-corner):not(.resize-handle-top):not(.resize-handle-left):not(.resize-handle-topLeft):not(.resize-handle-topRight):not(.resize-handle-bottomLeft):not(.section-resize-handle):not(span.resize-handle-dots) {
+    position: relative;
+    z-index: 1;
+}
+
+/* Layout-specific variables (only for container/flex blocks) */
+.seczone-layout.seczone-layout {
+    width: var(--b-width, 100%);  /* override shared-rule fallback of 'auto' — layouts are full-width by default */
+    gap: var(--b-gap, 0);
+    justify-content: var(--b-justify-content, normal);
+    flex-direction: var(--b-flex-direction, row);
+    align-items: var(--b-align-items, stretch);
+    flex-wrap: var(--b-flex-wrap, nowrap);
+    background-color: var(--b-layout-bg-color, transparent);
+}
+
+/* Hover/Active/Focus states for blocks via CSS variables */
+.seczone-block.seczone-block:not(.button):hover {
+    color: var(--b-hover-color, var(--b-color, inherit));
+    font-size: var(--b-hover-font-size, var(--b-font-size, inherit));
+    font-weight: var(--b-hover-font-weight, var(--b-font-weight, inherit));
+    font-style: var(--b-hover-font-style, var(--b-font-style, inherit));
+    text-decoration: var(--b-hover-text-decoration, var(--b-text-decoration, inherit));
+    background-color: var(--b-hover-bg-color, var(--b-bg-color, transparent));
+    border-color: var(--b-hover-border-color, var(--b-border-color, transparent));
+}
+
+.seczone-layout.seczone-layout:not(.button):hover {
+    color: var(--b-hover-color, var(--b-color, inherit));
+    font-size: var(--b-hover-font-size, var(--b-font-size, inherit));
+    font-weight: var(--b-hover-font-weight, var(--b-font-weight, inherit));
+    font-style: var(--b-hover-font-style, var(--b-font-style, inherit));
+    text-decoration: var(--b-hover-text-decoration, var(--b-text-decoration, inherit));
+    background-color: var(--b-hover-layout-bg-color, var(--b-layout-bg-color, transparent));
+    border-color: var(--b-hover-border-color, var(--b-border-color, transparent));
+}
+
+.seczone-block.seczone-block:not(.button):active {
+    color: var(--b-active-color, var(--b-color, inherit));
+    font-size: var(--b-active-font-size, var(--b-font-size, inherit));
+    font-weight: var(--b-active-font-weight, var(--b-font-weight, inherit));
+    background-color: var(--b-active-bg-color, var(--b-bg-color, transparent));
+}
+
+.seczone-layout.seczone-layout:not(.button):active {
+    color: var(--b-active-color, var(--b-color, inherit));
+    font-size: var(--b-active-font-size, var(--b-font-size, inherit));
+    font-weight: var(--b-active-font-weight, var(--b-font-weight, inherit));
+    background-color: var(--b-active-layout-bg-color, var(--b-layout-bg-color, transparent));
+}
+
+.seczone-block.seczone-block:not(.button):focus, 
+.seczone-block.seczone-block:not(.button):focus-within {
+    color: var(--b-focus-color, var(--b-color, inherit));
+    font-size: var(--b-focus-font-size, var(--b-font-size, inherit));
+    font-weight: var(--b-focus-font-weight, var(--b-font-weight, inherit));
+    background-color: var(--b-focus-bg-color, var(--b-bg-color, transparent));
+}
+
+.seczone-layout.seczone-layout:not(.button):focus, 
+.seczone-layout.seczone-layout:not(.button):focus-within {
+    color: var(--b-focus-color, var(--b-color, inherit));
+    font-size: var(--b-focus-font-size, var(--b-font-size, inherit));
+    font-weight: var(--b-focus-font-weight, var(--b-font-weight, inherit));
+    background-color: var(--b-focus-layout-bg-color, var(--b-layout-bg-color, transparent));
+}
+
+/* Editor state simulation classes */
+.seczone-block.seczone-block.cms-simulate-hover {
+    color: var(--b-hover-color, var(--b-color, inherit));
+    background-color: var(--b-hover-bg-color, var(--b-bg-color, transparent));
+    border-color: var(--b-hover-border-color, var(--b-border-color, transparent));
+}
+
+.seczone-layout.seczone-layout.cms-simulate-hover {
+    color: var(--b-hover-color, var(--b-color, inherit));
+    background-color: var(--b-hover-layout-bg-color, var(--b-layout-bg-color, transparent));
+    border-color: var(--b-hover-border-color, var(--b-border-color, transparent));
+}
+
+.seczone-block.seczone-block.cms-simulate-active {
+    color: var(--b-active-color, var(--b-color, inherit));
+    background-color: var(--b-active-bg-color, var(--b-bg-color, transparent));
+}
+
+.seczone-layout.seczone-layout.cms-simulate-active {
+    color: var(--b-active-color, var(--b-color, inherit));
+    background-color: var(--b-active-layout-bg-color, var(--b-layout-bg-color, transparent));
+}
+
+.seczone-block.seczone-block.cms-simulate-focus {
+    color: var(--b-focus-color, var(--b-color, inherit));
+    background-color: var(--b-focus-bg-color, var(--b-bg-color, transparent));
+}
+
+.seczone-layout.seczone-layout.cms-simulate-focus {
+    color: var(--b-focus-color, var(--b-color, inherit));
+    background-color: var(--b-focus-layout-bg-color, var(--b-layout-bg-color, transparent));
+}
+
+/* ============================= */
+/* BLOCK RESPONSIVE CASCADING    */
+/* ============================= */
+
+@media screen and (max-width: 1024px) {
+    .seczone-block.seczone-block,
+    .seczone-layout.seczone-layout {
+        color: var(--b-tablet-color, var(--b-color));
+        font-size: var(--b-tablet-font-size, var(--b-font-size));
+        font-weight: var(--b-tablet-font-weight, var(--b-font-weight));
+        font-style: var(--b-tablet-font-style, var(--b-font-style));
+        text-decoration: var(--b-tablet-text-decoration, var(--b-text-decoration));
+        padding: var(--b-tablet-padding, var(--b-padding));
+        margin: var(--b-tablet-margin, var(--b-margin));
+        width: var(--b-tablet-width, var(--b-width));
+        height: var(--b-tablet-height, var(--b-height));
+        border-width: var(--b-tablet-border-width, var(--b-border-width));
+        border-color: var(--b-tablet-border-color, var(--b-border-color));
+        border-radius: var(--b-tablet-border-radius, var(--b-border-radius));
+        box-shadow: var(--b-tablet-box-shadow, var(--b-box-shadow));
+        background-color: var(--b-tablet-bg-color, var(--b-bg-color));
+        text-align: var(--b-tablet-text-align, var(--b-text-align));
+    }
+    
+    .seczone-block.seczone-block:not(.button):hover {
+        color: var(--b-hover-color, var(--b-tablet-color, var(--b-color, inherit)));
+        font-size: var(--b-hover-font-size, var(--b-tablet-font-size, var(--b-font-size, inherit)));
+        font-weight: var(--b-hover-font-weight, var(--b-tablet-font-weight, var(--b-font-weight, inherit)));
+        font-style: var(--b-hover-font-style, var(--b-tablet-font-style, var(--b-font-style, inherit)));
+        text-decoration: var(--b-hover-text-decoration, var(--b-tablet-text-decoration, var(--b-text-decoration, inherit)));
+        background-color: var(--b-hover-bg-color, var(--b-tablet-bg-color, var(--b-bg-color, transparent)));
+        border-color: var(--b-hover-border-color, var(--b-tablet-border-color, var(--b-border-color, transparent)));
+    }
+    
+    .seczone-block.seczone-block:not(.button):active {
+        color: var(--b-active-color, var(--b-tablet-color, var(--b-color, inherit)));
+        font-size: var(--b-active-font-size, var(--b-tablet-font-size, var(--b-font-size, inherit)));
+        font-weight: var(--b-active-font-weight, var(--b-tablet-font-weight, var(--b-font-weight, inherit)));
+        background-color: var(--b-active-bg-color, var(--b-tablet-bg-color, var(--b-bg-color, transparent)));
+    }
+    
+    .seczone-block.seczone-block:not(.button):focus, 
+    .seczone-block.seczone-block:not(.button):focus-within {
+        color: var(--b-focus-color, var(--b-tablet-color, var(--b-color, inherit)));
+        font-size: var(--b-focus-font-size, var(--b-tablet-font-size, var(--b-font-size, inherit)));
+        font-weight: var(--b-focus-font-weight, var(--b-tablet-font-weight, var(--b-font-weight, inherit)));
+        background-color: var(--b-focus-bg-color, var(--b-tablet-bg-color, var(--b-bg-color, transparent)));
+    }
+}
+
+/* Layout-specific tablet responsive */
+@media screen and (max-width: 1024px) {
+    .seczone-layout.seczone-layout {
+        gap: var(--b-tablet-gap, var(--b-gap));
+        justify-content: var(--b-tablet-justify-content, var(--b-justify-content));
+        flex-direction: var(--b-tablet-flex-direction, var(--b-flex-direction));
+        align-items: var(--b-tablet-align-items, var(--b-align-items));
+        flex-wrap: var(--b-tablet-flex-wrap, var(--b-flex-wrap));
+        background-color: var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent));
+    }
+    
+    .seczone-layout.seczone-layout:not(.button):hover {
+        background-color: var(--b-hover-layout-bg-color, var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent)));
+    }
+    
+    .seczone-layout.seczone-layout:not(.button):active {
+        background-color: var(--b-active-layout-bg-color, var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent)));
+    }
+    
+    .seczone-layout.seczone-layout:not(.button):focus, 
+    .seczone-layout.seczone-layout:not(.button):focus-within {
+        background-color: var(--b-focus-layout-bg-color, var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent)));
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .seczone-block.seczone-block,
+    .seczone-layout.seczone-layout {
+        color: var(--b-mobile-color, var(--b-tablet-color, var(--b-color)));
+        font-size: var(--b-mobile-font-size, var(--b-tablet-font-size, var(--b-font-size)));
+        font-weight: var(--b-mobile-font-weight, var(--b-tablet-font-weight, var(--b-font-weight)));
+        font-style: var(--b-mobile-font-style, var(--b-tablet-font-style, var(--b-font-style)));
+        text-decoration: var(--b-mobile-text-decoration, var(--b-tablet-text-decoration, var(--b-text-decoration)));
+        padding: var(--b-mobile-padding, var(--b-tablet-padding, var(--b-padding)));
+        margin: var(--b-mobile-margin, var(--b-tablet-margin, var(--b-margin)));
+        width: var(--b-mobile-width, var(--b-tablet-width, var(--b-width)));
+        height: var(--b-mobile-height, var(--b-tablet-height, var(--b-height)));
+        border-width: var(--b-mobile-border-width, var(--b-tablet-border-width, var(--b-border-width)));
+        border-color: var(--b-mobile-border-color, var(--b-tablet-border-color, var(--b-border-color)));
+        border-radius: var(--b-mobile-border-radius, var(--b-tablet-border-radius, var(--b-border-radius)));
+        box-shadow: var(--b-mobile-box-shadow, var(--b-tablet-box-shadow, var(--b-box-shadow)));
+        background-color: var(--b-mobile-bg-color, var(--b-tablet-bg-color, var(--b-bg-color)));
+        text-align: var(--b-mobile-text-align, var(--b-tablet-text-align, var(--b-text-align)));
+    }
+    
+    .seczone-block.seczone-block:not(.button):hover {
+        color: var(--b-hover-color, var(--b-mobile-color, var(--b-tablet-color, var(--b-color, inherit))));
+        font-size: var(--b-hover-font-size, var(--b-mobile-font-size, var(--b-tablet-font-size, var(--b-font-size, inherit))));
+        font-weight: var(--b-hover-font-weight, var(--b-mobile-font-weight, var(--b-tablet-font-weight, var(--b-font-weight, inherit))));
+        font-style: var(--b-hover-font-style, var(--b-mobile-font-style, var(--b-tablet-font-style, var(--b-font-style, inherit))));
+        text-decoration: var(--b-hover-text-decoration, var(--b-mobile-text-decoration, var(--b-tablet-text-decoration, var(--b-text-decoration, inherit))));
+        background-color: var(--b-hover-bg-color, var(--b-mobile-bg-color, var(--b-tablet-bg-color, var(--b-bg-color, transparent))));
+        border-color: var(--b-hover-border-color, var(--b-mobile-border-color, var(--b-tablet-border-color, var(--b-border-color, transparent))));
+    }
+    
+    .seczone-block.seczone-block:not(.button):active {
+        color: var(--b-active-color, var(--b-mobile-color, var(--b-tablet-color, var(--b-color, inherit))));
+        font-size: var(--b-active-font-size, var(--b-mobile-font-size, var(--b-tablet-font-size, var(--b-font-size, inherit))));
+        font-weight: var(--b-active-font-weight, var(--b-mobile-font-weight, var(--b-tablet-font-weight, var(--b-font-weight, inherit))));
+        background-color: var(--b-active-bg-color, var(--b-mobile-bg-color, var(--b-tablet-bg-color, var(--b-bg-color, transparent))));
+    }
+    
+    .seczone-block.seczone-block:not(.button):focus, 
+    .seczone-block.seczone-block:not(.button):focus-within {
+        color: var(--b-focus-color, var(--b-mobile-color, var(--b-tablet-color, var(--b-color, inherit))));
+        font-size: var(--b-focus-font-size, var(--b-mobile-font-size, var(--b-tablet-font-size, var(--b-font-size, inherit))));
+        font-weight: var(--b-focus-font-weight, var(--b-mobile-font-weight, var(--b-tablet-font-weight, var(--b-font-weight, inherit))));
+        background-color: var(--b-focus-bg-color, var(--b-mobile-bg-color, var(--b-tablet-bg-color, var(--b-bg-color, transparent))));
+    }
+}
+
+/* Layout-specific mobile responsive */
+@media screen and (max-width: 800px) {
+    .seczone-layout.seczone-layout {
+        gap: var(--b-mobile-gap, var(--b-tablet-gap, var(--b-gap)));
+        justify-content: var(--b-mobile-justify-content, var(--b-tablet-justify-content, var(--b-justify-content)));
+        flex-direction: var(--b-mobile-flex-direction, var(--b-tablet-flex-direction, var(--b-flex-direction)));
+        align-items: var(--b-mobile-align-items, var(--b-tablet-align-items, var(--b-align-items)));
+        flex-wrap: var(--b-mobile-flex-wrap, var(--b-tablet-flex-wrap, var(--b-flex-wrap)));
+        background-color: var(--b-mobile-layout-bg-color, var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent)));
+    }
+    
+    .seczone-layout.seczone-layout:not(.button):hover {
+        background-color: var(--b-hover-layout-bg-color, var(--b-mobile-layout-bg-color, var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent))));
+    }
+    
+    .seczone-layout.seczone-layout:not(.button):active {
+        background-color: var(--b-active-layout-bg-color, var(--b-mobile-layout-bg-color, var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent))));
+    }
+    
+    .seczone-layout.seczone-layout:not(.button):focus, 
+    .seczone-layout.seczone-layout:not(.button):focus-within {
+        background-color: var(--b-focus-layout-bg-color, var(--b-mobile-layout-bg-color, var(--b-tablet-layout-bg-color, var(--b-layout-bg-color, transparent))));
+    }
+}
+
+
+/* ===================== */
+/* SECTION-LEVEL STYLES  */
+/* ===================== */
+
+/* Base section styles using CSS variables */
+.seczone.seczone {
+    color: var(--sec-color, inherit);
+    font-size: var(--sec-font-size, inherit);
+    font-weight: var(--sec-font-weight, inherit);
+    font-style: var(--sec-font-style, inherit);
+    text-decoration: var(--sec-text-decoration, inherit);
+    background-color: var(--sec-bg-color, transparent);
+    background-image: var(--sec-bg-image, none);
+    background-position: var(--sec-bg-position, center);
+    background-repeat: var(--sec-bg-repeat, no-repeat);
+    background-size: var(--sec-bg-size, cover);
+    padding: var(--sec-padding, 80px 0px);
+    margin: var(--sec-margin, 0);
+    border-width: var(--sec-border-width, 0);
+    border-style: var(--sec-border-style, none);
+    border-color: var(--sec-border-color, transparent);
+    border-radius: var(--sec-border-radius, 0);
+    box-shadow: var(--sec-box-shadow, none);
+}
+
+/* Section hover/active/focus states via CSS variables */
+.seczone.seczone:hover {
+    color: var(--s-hover-color, var(--sec-color, inherit));
+    font-size: var(--s-hover-font-size, var(--sec-font-size, inherit));
+    font-weight: var(--s-hover-font-weight, var(--sec-font-weight, inherit));
+    font-style: var(--s-hover-font-style, var(--sec-font-style, inherit));
+    text-decoration: var(--s-hover-text-decoration, var(--sec-text-decoration, inherit));
+    background-color: var(--s-hover-bg-color, var(--sec-bg-color, transparent));
+    border-color: var(--s-hover-border-color, var(--sec-border-color, transparent));
+}
+
+.seczone.seczone:active {
+    color: var(--s-active-color, var(--sec-color, inherit));
+    background-color: var(--s-active-bg-color, var(--sec-bg-color, transparent));
+}
+
+.seczone.seczone:focus, 
+.seczone.seczone:focus-within {
+    color: var(--s-focus-color, var(--sec-color, inherit));
+    background-color: var(--s-focus-bg-color, var(--sec-bg-color, transparent));
+}
+
+/* Editor state simulation classes for sections */
+.seczone.seczone.cms-simulate-hover {
+    color: var(--s-hover-color, var(--sec-color, inherit));
+    background-color: var(--s-hover-bg-color, var(--sec-bg-color, transparent));
+    border-color: var(--s-hover-border-color, var(--sec-border-color, transparent));
+}
+.seczone.seczone.cms-simulate-active {
+    color: var(--s-active-color, var(--sec-color, inherit));
+    background-color: var(--s-active-bg-color, var(--sec-bg-color, transparent));
+}
+.seczone.seczone.cms-simulate-focus {
+    color: var(--s-focus-color, var(--sec-color, inherit));
+    background-color: var(--s-focus-bg-color, var(--sec-bg-color, transparent));
+}
+
+/* =============================== */
+/* SECTION RESPONSIVE CASCADING    */
+/* =============================== */
+
+@media screen and (max-width: 1024px) {
+    .seczone.seczone {
+        color: var(--s-tablet-color, var(--sec-color));
+        font-size: var(--s-tablet-font-size, var(--sec-font-size));
+        font-weight: var(--s-tablet-font-weight, var(--sec-font-weight));
+        padding: var(--s-tablet-padding, var(--sec-padding, 80px 0px));
+        margin: var(--s-tablet-margin, var(--sec-margin));
+        min-height: var(--s-tablet-height, var(--sec-height, auto));
+        background-color: var(--s-tablet-bg-color, var(--sec-bg-color));
+        border-width: var(--s-tablet-border-width, var(--sec-border-width));
+        border-color: var(--s-tablet-border-color, var(--sec-border-color));
+        border-radius: var(--s-tablet-border-radius, var(--sec-border-radius));
+        box-shadow: var(--s-tablet-box-shadow, var(--sec-box-shadow));
+    }
+    
+    .seczone.seczone:hover {
+        color: var(--s-hover-color, var(--s-tablet-color, var(--sec-color, inherit)));
+        font-size: var(--s-hover-font-size, var(--s-tablet-font-size, var(--sec-font-size, inherit)));
+        font-weight: var(--s-hover-font-weight, var(--s-tablet-font-weight, var(--sec-font-weight, inherit)));
+        font-style: var(--s-hover-font-style, var(--sec-font-style, inherit));
+        text-decoration: var(--s-hover-text-decoration, var(--sec-text-decoration, inherit));
+        background-color: var(--s-hover-bg-color, var(--s-tablet-bg-color, var(--sec-bg-color, transparent)));
+        border-color: var(--s-hover-border-color, var(--s-tablet-border-color, var(--sec-border-color, transparent)));
+    }
+    
+    .seczone.seczone:active {
+        color: var(--s-active-color, var(--s-tablet-color, var(--sec-color, inherit)));
+        background-color: var(--s-active-bg-color, var(--s-tablet-bg-color, var(--sec-bg-color, transparent)));
+    }
+    
+    .seczone.seczone:focus,
+    .seczone.seczone:focus-within {
+        color: var(--s-focus-color, var(--s-tablet-color, var(--sec-color, inherit)));
+        background-color: var(--s-focus-bg-color, var(--s-tablet-bg-color, var(--sec-bg-color, transparent)));
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .seczone.seczone {
+        color: var(--s-mobile-color, var(--s-tablet-color, var(--sec-color)));
+        font-size: var(--s-mobile-font-size, var(--s-tablet-font-size, var(--sec-font-size)));
+        font-weight: var(--s-mobile-font-weight, var(--s-tablet-font-weight, var(--sec-font-weight)));
+        padding: var(--s-mobile-padding, var(--s-tablet-padding, var(--sec-padding, 80px 0px)));
+        margin: var(--s-mobile-margin, var(--s-tablet-margin, var(--sec-margin)));
+        min-height: var(--s-mobile-height, var(--s-tablet-height, var(--sec-height, auto)));
+        background-color: var(--s-mobile-bg-color, var(--s-tablet-bg-color, var(--sec-bg-color)));
+        border-width: var(--s-mobile-border-width, var(--s-tablet-border-width, var(--sec-border-width)));
+        border-color: var(--s-mobile-border-color, var(--s-tablet-border-color, var(--sec-border-color)));
+        border-radius: var(--s-mobile-border-radius, var(--s-tablet-border-radius, var(--sec-border-radius)));
+        box-shadow: var(--s-mobile-box-shadow, var(--s-tablet-box-shadow, var(--sec-box-shadow)));
+    }
+    
+    .seczone.seczone:hover {
+        color: var(--s-hover-color, var(--s-mobile-color, var(--s-tablet-color, var(--sec-color, inherit))));
+        font-size: var(--s-hover-font-size, var(--s-mobile-font-size, var(--s-tablet-font-size, var(--sec-font-size, inherit))));
+        font-weight: var(--s-hover-font-weight, var(--s-mobile-font-weight, var(--s-tablet-font-weight, var(--sec-font-weight, inherit))));
+        font-style: var(--s-hover-font-style, var(--sec-font-style, inherit));
+        text-decoration: var(--s-hover-text-decoration, var(--sec-text-decoration, inherit));
+        background-color: var(--s-hover-bg-color, var(--s-mobile-bg-color, var(--s-tablet-bg-color, var(--sec-bg-color, transparent))));
+        border-color: var(--s-hover-border-color, var(--s-mobile-border-color, var(--s-tablet-border-color, var(--sec-border-color, transparent))));
+    }
+    
+    .seczone.seczone:active {
+        color: var(--s-active-color, var(--s-mobile-color, var(--s-tablet-color, var(--sec-color, inherit))));
+        background-color: var(--s-active-bg-color, var(--s-mobile-bg-color, var(--s-tablet-bg-color, var(--sec-bg-color, transparent))));
+    }
+    
+    .seczone.seczone:focus,
+    .seczone.seczone:focus-within {
+        color: var(--s-focus-color, var(--s-mobile-color, var(--s-tablet-color, var(--sec-color, inherit))));
+        background-color: var(--s-focus-bg-color, var(--s-mobile-bg-color, var(--s-tablet-bg-color, var(--sec-bg-color, transparent))));
+    }
+}
+
+
+/* ====================== */
+/* BUTTON-LEVEL STYLES    */
+/* ====================== */
+/* 
+ * Button CSS Variable Cascade
+ * Mirrors the block/section variable cascade pattern.
+ * Triggered by the .button.seczone-block selector combination:
+ * - CMS-rendered buttons always have both .button and .seczone-block
+ * - Non-button seczone-blocks (text, image) do NOT have .button
+ * - Standalone .button elements (non-CMS) do NOT have .seczone-block
+ * When no CMS overrides exist, the .button base class from base.css
+ * provides all styling via :root variables — this cascade only kicks in
+ * when CMS properties are applied via inline CSS variables.
+ */
+
+/* Base button styles using CSS variables */
+.button.seczone-block {
+    background-color: var(--btn-bg, var(--primary));
+    color: var(--btn-color, #fff);
+    border-width: var(--btn-border-width, 1px);
+    border-style: var(--btn-border-style, solid);
+    border-color: var(--btn-border-color, rgba(0,0,0,.05));
+    border-radius: var(--btn-border-radius, var(--input-radius));
+    padding: var(--btn-padding, 0px 15px);
+    font-size: var(--btn-font-size, inherit);
+    font-weight: var(--btn-font-weight, 500);
+    height: var(--btn-height, var(--b-height, 38px));
+    gap: var(--btn-gap, 8px);
+    width: var(--btn-width, auto);
+}
+/* Hover state */
+.button.seczone-block:hover {
+    background-color: var(--btn-bg, var(--primary));
+    color: var(--btn-hover-color, var(--btn-color, #fff));
+    border-color: var(--btn-hover-border-color, var(--btn-border-color, rgba(0,0,0,.05)));
+    font-weight: var(--btn-hover-font-weight, var(--btn-font-weight, 500));
+}
+
+/* Active state */
+.button.seczone-block:active {
+    background-color: var(--btn-bg, var(--primary));
+    color: var(--btn-active-color, var(--btn-hover-color, var(--btn-color, #fff)));
+}
+
+/* Editor state simulation classes */
+.button.seczone-block.cms-simulate-hover {
+    box-shadow: 0px 0px 2000px 0px rgba(0,0,0,.1) inset;
+    color: var(--btn-hover-color, var(--btn-color, #fff));
+    border-color: var(--btn-hover-border-color, var(--btn-border-color, rgba(0,0,0,.05)));
+    font-weight: var(--btn-hover-font-weight, var(--btn-font-weight, 500));
+}
+
+.button.seczone-block.cms-simulate-active {
+    box-shadow: 0px 0px 2000px 0px rgba(0,0,0,.2) inset;
+    color: var(--btn-active-color, var(--btn-hover-color, var(--btn-color, #fff)));
+}
+
+/* Tablet responsive cascade */
+@media screen and (max-width: 1024px) {
+    .button.seczone-block {
+        padding: var(--btn-tablet-padding, var(--btn-padding, 0px 15px));
+        font-size: var(--btn-tablet-font-size, var(--btn-font-size, inherit));
+        font-weight: var(--btn-tablet-font-weight, var(--btn-font-weight, 500));
+        gap: var(--btn-tablet-gap, var(--btn-gap, 8px));
+        width: var(--btn-tablet-width, var(--btn-width, auto));
+        background-color: var(--btn-tablet-bg, var(--btn-bg, var(--primary)));
+        color: var(--btn-tablet-color, var(--btn-color, #fff));
+        border-width: var(--btn-tablet-border-width, var(--btn-border-width, 1px));
+        border-style: var(--btn-tablet-border-style, var(--btn-border-style, solid));
+        border-color: var(--btn-tablet-border-color, var(--btn-border-color, rgba(0,0,0,.05)));
+        border-radius: var(--btn-tablet-border-radius, var(--btn-border-radius, var(--input-radius)));
+    }
+    
+    .button.seczone-block:hover {
+        background-color: var(--btn-tablet-bg, var(--btn-bg, var(--primary)));
+        color: var(--btn-hover-color, var(--btn-tablet-color, var(--btn-color, #fff)));
+        border-color: var(--btn-hover-border-color, var(--btn-tablet-border-color, var(--btn-border-color, rgba(0,0,0,.05))));
+        font-weight: var(--btn-hover-font-weight, var(--btn-tablet-font-weight, var(--btn-font-weight, 500)));
+    }
+
+    .button.seczone-block:active {
+        background-color: var(--btn-tablet-bg, var(--btn-bg, var(--primary)));
+        color: var(--btn-active-color, var(--btn-hover-color, var(--btn-tablet-color, var(--btn-color, #fff))));
+    }
+}
+
+/* Mobile responsive cascade (mobile overrides tablet) */
+@media screen and (max-width: 800px) {
+    .button.seczone-block {
+        padding: var(--btn-mobile-padding, var(--btn-tablet-padding, var(--btn-padding, 0px 15px)));
+        font-size: var(--btn-mobile-font-size, var(--btn-tablet-font-size, var(--btn-font-size, inherit)));
+        font-weight: var(--btn-mobile-font-weight, var(--btn-tablet-font-weight, var(--btn-font-weight, 500)));
+        gap: var(--btn-mobile-gap, var(--btn-tablet-gap, var(--btn-gap, 8px)));
+        width: var(--btn-mobile-width, var(--btn-tablet-width, var(--btn-width, auto)));
+        background-color: var(--btn-mobile-bg, var(--btn-tablet-bg, var(--btn-bg, var(--primary))));
+        color: var(--btn-mobile-color, var(--btn-tablet-color, var(--btn-color, #fff)));
+        border-width: var(--btn-mobile-border-width, var(--btn-tablet-border-width, var(--btn-border-width, 1px)));
+        border-style: var(--btn-mobile-border-style, var(--btn-tablet-border-style, var(--btn-border-style, solid)));
+        border-color: var(--btn-mobile-border-color, var(--btn-tablet-border-color, var(--btn-border-color, rgba(0,0,0,.05))));
+        border-radius: var(--btn-mobile-border-radius, var(--btn-tablet-border-radius, var(--btn-border-radius, var(--input-radius))));
+    }
+    
+    .button.seczone-block:hover {
+        background-color: var(--btn-mobile-bg, var(--btn-tablet-bg, var(--btn-bg, var(--primary))));
+        color: var(--btn-hover-color, var(--btn-mobile-color, var(--btn-tablet-color, var(--btn-color, #fff))));
+        border-color: var(--btn-hover-border-color, var(--btn-mobile-border-color, var(--btn-tablet-border-color, var(--btn-border-color, rgba(0,0,0,.05)))));
+        font-weight: var(--btn-hover-font-weight, var(--btn-mobile-font-weight, var(--btn-tablet-font-weight, var(--btn-font-weight, 500))));
+    }
+
+    .button.seczone-block:active {
+        background-color: var(--btn-mobile-bg, var(--btn-tablet-bg, var(--btn-bg, var(--primary))));
+        color: var(--btn-active-color, var(--btn-hover-color, var(--btn-mobile-color, var(--btn-tablet-color, var(--btn-color, #fff)))));
+    }
+}

@@ -1,0 +1,121 @@
+/* web.css */
+
+
+
+
+
+
+
+
+
+
+
+
+/* old * /
+:root{
+    --gap:10px;
+    --spacer:20px;
+    --header-bg:#FFFFFF;
+    --header-border:#E5E7EB;
+    --header-shadow:0px 0px 5px 0px #aaa;
+    --body-bg:#f2f4f6;
+
+    --navbar-color:#000;
+    --navbar-color-hover:#000;
+    --navbar-color-active:#000;
+
+    --footer-bg:#eeeeee;
+
+    --section-padding:80px;
+}
+
+.web-body.dark-mode
+{
+    --text-color: #e5e7eb;
+    --border-color:#6c6868;
+    --body-bg:#3c3b3b;
+
+    --focus-color:var(--text-color);
+
+    --input-border-color:#545353;
+    --input-color:var(--text-color); 
+    --input-bg:#303030;
+
+    --pagelet-bg:#424242;
+    --pagelet-border-color:#686565;
+
+    --link: #1877f2;
+
+    --danger-color: #f599a2;
+}
+
+.web-body .pagelet-foot{padding:var(--pagelet-padding);    }
+
+.web-container{display:flex;flex-direction:column; position:relative; min-height:100vh; width:100%; color:var(--text-color);background-color:var(--body-background);   }
+    .web-container .header, .web-container .page-content, .web-container .footer{float:left;height:auto;width:100%; text-align:center;       }
+        .web-container .page-content{z-index:0;flex:1; display:flow-root;  }
+        .web-container .footer{padding:var(--section-padding) 0px; border-top:1px solid var(--header-border); background-color:var(--footer-bg); }
+        .web-container .header{z-index:1;position:sticky;top:0px;padding:5px 0px; box-shadow:var(--header-shadow); border-bottom:1px solid var(--header-border); background-color:var(--header-bg);    }
+            .web-container .header-in{display:flex;align-items:center; gap:10px;  height:auto;width:100%;     }
+            .web-container .header .logo{display:flex;align-items:center;gap:10px; float:left;height:auto;width:auto;   }
+                .web-container .header .logo img{float:left;height:40px;width:40px;     }
+                .web-container .header .logo span{float:left;height:auto;width:auto;    }
+                    .web-container .header .logo span h2, .web-container .header .logo span p{float:left;height:auto;width:100%;  font-size:1.2em; font-weight:500;  }
+                        .web-container .header .logo span p{font-size:.82em;font-weight:400; margin-top:-1px;   }
+
+                .web-container .header .nav{display:flex;align-items:center;gap:30px; margin-left:auto;  height:auto;width:auto;    }
+                    .web-container .header .navbar{float:left;height:auto;width:auto; font-weight:500; color:var(--navbar-color);    }
+                        .web-container .header .navbar:hover{color:var(--navbar-color-hover);                       }
+                        .web-container .header .navbar:active{color:var(--navbar-color-active);                     }
+        
+.web-container .sector, .web-container .section{display:inline-block;height:auto;width:1600px;max-width:94%; text-align:left;    }
+    .web-container .section{padding:var(--section-padding) 0px;   }
+
+/* old end */
+/* --:-- * /
+.web-profile-photo{height:139px;width:139px;   }
+/* --:-- */
+/*
+
+.web-container{display:flex;flex-direction:column; position:relative; min-height:100vh; width:100%; color:var(--text-color);background-color:var(--body-background); background:red;  }
+    .web-container .header, .web-container .page-content, .web-container .footer{float:left;height:auto;width:100%; text-align:center;       }
+*/
+.web-container .page-contentX{float:left;height:auto;width:100%; text-align:center;       }
+.web-container .page-contentX{z-index:0;flex:1; display:flow-root; width:100%;height:100vh;    }
+
+
+/* Login */
+.login-page{display:flex;align-items:center;justify-content:center; height:100%;width:100%; overflow:auto; background-color:var(--body-bg); }
+    .login-container{display:inline-block;height:auto;width:450px;max-width:94%;padding:20px 0px; text-align:left;                          }
+        .login-container p.info{text-align:left;     }
+        
+        .login-container a{font-weight:500; color:var(--link);      }
+            .login-container a:hover{color:var(--link-hover);       }
+            .login-container a:active{color:var(--link-active);     }
+        
+        .login-body{float:left;height:auto;width:100%; padding:30px;    }
+        .login-logo{display:flex;align-items:center;gap:15px; float:left;height:auto;width:100%;margin-bottom:var(--spacer);                }
+            .login-logo img{float:left;height:40px;width:40px;              }
+            .login-logo span{float:left;height:auto;width:auto;             }
+                .login-logo span h2, .login-logo span p{float:left;height:auto;width:100%; font-size:1.2em; }
+                    .login-logo span p{font-size:.82em; margin-top:-1px;    }
+
+        .login-head{float:left;height:auto;width:100%; margin-bottom:var(--spacer);                             }
+            .login-head h2, .login-head p{float:left;height:auto;width:100%; font-size:1.2em;font-weight:500;   }
+            .login-head p{margin-top:5px; font-size:1em; font-weight:normal;                                    }
+
+        .login-buttons{float:left;height:auto;width:100%;   text-align:center;                      }
+            .login-buttons .button{width:100%;margin-bottom:var(--spacer); justify-content:center;  }
+
+
+        .login-actions{float:left;height:auto;width:100%;   text-align:center;                      }
+            .login-actions .button{width:100%;margin-bottom:var(--spacer); justify-content:center;  }
+            .login-actions span{display:flex;align-items:center;vertical-align:center; float:left;height:auto;width:100%;padding:0px; margin-bottom:20px;   }
+                .login-actions span a{float:right;height:auto;width:auto;margin-left:auto;                                                                  }
+                .login-actions span label{display:flex;vertical-align:center;align-items:center; float:left;height:auto;width:auto; cursor:pointer;         }
+                    .login-actions span label input{height:auto;margin:0px 10px 0px 0px; cursor:pointer; }
+
+/* Login end */
+
+
+

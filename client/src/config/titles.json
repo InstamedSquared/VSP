@@ -1,0 +1,13 @@
+{
+    "baseTitle": "Template",
+    "pageTitles": {
+        "/": "{baseTitle}",
+        "/login": "Login | {baseTitle}",
+        "/reset-password": "Reset Password | {baseTitle}",
+
+        "/about": "About Us | {baseTitle}",
+        "/contact": "Contact Support",
+
+        "/admin": "Admin Dashboard"
+    }
+}

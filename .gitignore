@@ -1,0 +1,21 @@
+node_modules
+.env
+
+# Redis database files
+*.rdb
+dump.rdb
+temp-*.rdb
+
+# Temporary search/lookup files
+*_search.txt
+memurai_search.txt
+
+# Test files (move to proper test directory instead)
+test-*.js
+
+# Ignore large media files, user uploads, and compiled binaries
+private_storage/
+server/logs/
+redis/*.exe
+redis/*.pdb
+redis/*.dll
