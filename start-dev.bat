@@ -1,6 +1,6 @@
 @echo off
 echo Starting Redis Server...
-start "Redis Server" /min "d:\Node\VSP\redis\redis-server.exe"
+start "Redis Server" /min "D:\Node\VSP\redis\redis-server.exe"
 
 echo Waiting for Redis to initialize...
 timeout /t 2 /nobreak >nul

@@ -64,3 +64,24 @@ The layout is built using a "Nested Flexbox" approach. Here is how the component
    Used inside an `.input-case` when an input needs an icon.
    - **Classes:** `.input-group.left` or `.input-group.right`.
    - **Purpose:** It positions the icon absolutely inside the input and adds the necessary padding to the text so it doesn't overlap with the icon.
+
+## VSP-Specific Rules (Additions)
+
+### Database
+1. All new tables MUST include the standard audit columns via `addAuditColumns()` helper.
+2. All queries MUST include `tenant_id` filtering via middleware.
+3. Use Knex query builder exclusively — no raw SQL unless dialect-specific logic is required.
+4. Use Knex `.raw()` with dialect-aware operators when raw SQL is unavoidable.
+
+### API
+1. All new routes MUST be under `/api/v1/` namespace.
+2. Domain-specific routes go in `server/routes/domain/`.
+3. Generic CRUD entities use the existing `ResourceModel` + dynamic registration pattern.
+
+### Security
+1. All domain controllers handling sensitive data MUST include audit logging.
+2. Encrypted fields (e.g., bank details) use Node.js `crypto` module with AES-256.
+
+### Frontend
+1. New domain pages go under `client/src/pages/{admin|client|employee}/{domain}/`.
+2. Reusable domain components go in `client/src/components/domain/{domain}/`.

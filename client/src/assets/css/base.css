@@ -54,11 +54,12 @@ p.invalid, p.info, p.success, p.warning, p.error, p.primary, p.secondary, p.focu
 }
 
 /* width */
-.w1,.w1-fx, .w2,.w2-fx, .w25,.w25-fx, .w3,.w3-fx, .w35,.w35-fx, .w4,.w4-fx, .w5,.w5-fx, .w6,.w6-fx, .w7,.w7-fx, .w8,.w8-fx, .w9,.w9-fx, .w95,.w95-fx, .w100{float:left;height:auto; min-width:0px; }
+.w1,.w1-fx, .w2,.w2-fx, .w25,.w25-fx, .w3,.w3-fx, .w33,.w33-fx, .w35,.w35-fx, .w4,.w4-fx, .w5,.w5-fx, .w6,.w6-fx, .w7,.w7-fx, .w8,.w8-fx, .w9,.w9-fx, .w95,.w95-fx, .w100{float:left;height:auto; min-width:0px; }
 
 .w1, .w1-fx{width:10%; }
 .w2, .w2-fx{width:20%; }
 .w3, .w3-fx{width:30%; }
+.w33, .w33-fx{width:33.3333%; }
 .w4, .w4-fx{width:40%; }
 .w5, .w5-fx{width:50%; }
 .w6, .w6-fx{width:60%; }
@@ -71,7 +72,7 @@ p.invalid, p.info, p.success, p.warning, p.error, p.primary, p.secondary, p.focu
 .w25, .w25-fx{width:25%; }
 .w35, .w35-fx{width:35%; }
 
-@media screen and (max-width:900px){ .w1,.w2,.w25,.w3,.w35,.w4,.w5,.w6,.w7,.w8,.w9,.w95{width:100%;   } }
+@media screen and (max-width:900px){ .w1,.w2,.w25,.w3,.w33,.w35,.w4,.w5,.w6,.w7,.w8,.w9,.w95{width:100%;   } }
 /* width end */
 
 
@@ -123,6 +124,11 @@ p.invalid, p.info, p.success, p.warning, p.error, p.primary, p.secondary, p.focu
                 .input-case.invalid em, .input-hints.invalid{color:var(--danger-color);     }
                 .input-case.invalid .input-icon.right{color:var(--danger-color);            }
                 .input-case.invalid input, .input-case.invalid select, .input-case.invalid textarea{border-color:var(--danger-color);       }
+
+                /* Hide number spinners */
+                .input-case input[type=number]::-webkit-inner-spin-button, 
+                .input-case input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+                .input-case input[type=number] { -moz-appearance: textfield; }
                 
             .input-group{display:flex;align-items:center; position:relative;float:left;height:auto;width:100%;      }
                 .input-group input, .input-group select, .input-group textarea{width:100%;                          }

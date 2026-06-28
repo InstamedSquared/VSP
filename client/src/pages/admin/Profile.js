@@ -8,6 +8,8 @@ import Icon from '../../components/common/Icon';
 import { icons } from '../../config/icons';
 import useForm from '../../hooks/useForm';
 import { FormInput, FormSelect, FormTextarea, FormPassword } from '../../components/common/FormFields';
+import EmployeeProfileExt from './EmployeeProfileExt';
+import ClientProfileExt from './ClientProfileExt';
 
 
 const ProfileForm = ({ item, onSave }) => {
@@ -387,6 +389,9 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
+
+                {user?.kind === 'employee' && <EmployeeProfileExt user={user} handleToggle={handleToggle} />}
+                {user?.kind === 'client' && <ClientProfileExt user={user} />}
 
             </div>
         </div>

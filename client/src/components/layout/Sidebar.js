@@ -4,20 +4,50 @@ import Icon from '../common/Icon';
 import { icons } from '../../config/icons';
 
 const adminGroup = {
+    workforce: [{
+        title: 'Workforce', icon: icons.users, links: [
+            { to: '/admin/workforce/bench', label: 'Bench Status' },
+            { to: '/admin/workforce/skills', label: 'Skills Inventory' },
+            { to: '/admin/workforce/payslips', label: 'Payslips' },
+        ],
+    }],
+    recruitment: [{
+        title: 'Recruitment', icon: icons.userPlus, links: [
+            { to: '/admin/recruitment/applicants', label: 'Applicants' },
+            { to: '/admin/recruitment/pipeline', label: 'Pipeline' },
+        ],
+    }],
+    operations: [{
+        title: 'Operations', icon: icons.settings, links: [
+            { to: '/admin/operations/assignments', label: 'Staff Assignments' },
+            { to: '/admin/operations/compliance', label: 'Compliance' },
+            { to: '/admin/operations/announcements', label: 'Announcements' },
+        ],
+    }],
+    finance: [{
+        title: 'Finance', icon: icons.banking, links: [
+            { to: '/admin/finance/invoices', label: 'Invoices' },
+            { to: '/admin/finance/payroll', label: 'Payroll' },
+        ],
+    }],
 };
 
 const empGroup = {
-    tasks: [{
-        title: 'Tasks', icon: icons.list, links: [
-            { to: '/employee/tasks/all', label: 'All Tasks' },
-            { to: '/employee/tasks/pending', label: 'Pending' },
+    lms: [{
+        title: 'Learning', icon: icons.book, links: [
+            { to: '/employee/lms/courses', label: 'My Courses' },
+            { to: '/employee/lms/progress', label: 'Progress' },
         ],
-    },],
+    }],
+    hr: [{
+        title: 'HR', icon: icons.user, links: [
+            { to: '/employee/hr/payslips', label: 'My Payslips' },
+            { to: '/employee/hr/leaves', label: 'Leave Requests' },
+        ],
+    }],
 };
 
-const clientGroup = {
-    // Clients has it's own sidebar and layout, this is just a sample
-};
+const clientGroup = {}; // Clients handled in SidebarClient.js
 
 
 const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar, handleLogout }) => {
@@ -70,7 +100,13 @@ const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar
                             <div className='sidebar-lbl'>ACCOUNTS</div>
                             <div className='a-sidebar'> <NavLink onClick={handleLinkClick} to='/admin/users' className={({ isActive }) => (isActive ? 'sidebar-active' : '')}> <Icon icon={icons.users} /> <p>Users</p> </NavLink> </div>
                             <div className='a-sidebar'> <NavLink onClick={handleLinkClick} to='/admin/employees' className={({ isActive }) => (isActive ? 'sidebar-active' : '')}> <Icon icon={icons.idCard} /> <p>Employees</p> </NavLink> </div>
-                            <div className='a-sidebar'> <NavLink onClick={handleLinkClick} to='/admin/clients' className={({ isActive }) => (isActive ? 'sidebar-active' : '')}> <Icon icon={icons.contact} /> <p>Clients</p> </NavLink> </div>
+                            <div className='a-sidebar'> <NavLink onClick={handleLinkClick} to='/admin/operations/clients' className={({ isActive }) => (isActive ? 'sidebar-active' : '')}> <Icon icon={icons.contact} /> <p>Clients</p> </NavLink> </div>
+
+                            <div className='sidebar-lbl'>MODULES</div>
+                            {renderGroup('workforce')}
+                            {renderGroup('recruitment')}
+                            {renderGroup('operations')}
+                            {renderGroup('finance')}
 
                             <div className='sidebar-lbl'>SETTINGS</div>
                             <div className='a-sidebar'> <NavLink onClick={handleLinkClick} to='/admin/settings' className={({ isActive }) => (isActive ? 'sidebar-active' : '')}> <Icon icon={icons.settings} /> <p>Settings</p> </NavLink> </div>
@@ -80,8 +116,10 @@ const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar
                     {user?.kind === 'employee' && (
                         <>
                             <div className='a-sidebar'> <NavLink onClick={handleLinkClick} to='/employee' end className={({ isActive }) => isActive ? 'sidebar-active' : ''}> <Icon icon={icons.layoutDashboard} /> <p>Dashboard</p> </NavLink> </div>
-                            <div className='sidebar-lbl'>WORK</div>
-                            {renderGroup('tasks')}
+                            
+                            <div className='sidebar-lbl'>MODULES</div>
+                            {renderGroup('lms')}
+                            {renderGroup('hr')}
                         </>)}
 
                     <div className='sidebar-lbl'>GENERAL</div>

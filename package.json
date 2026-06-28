@@ -1,5 +1,5 @@
 {
-    "name": "proj3",
+    "name": "vsp",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
@@ -13,7 +13,7 @@
     "author": "",
     "license": "ISC",
     "type": "commonjs",
-    "description": "",
+    "description": "VSP Workforce Management Platform",
     "devDependencies": {
         "concurrently": "^9.2.0"
     },

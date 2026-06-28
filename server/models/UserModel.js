@@ -49,7 +49,17 @@ class UserModel extends ResourceModel {
             return acc;
         }, {});
 
-        const appData = { user: user, settings: settings };
+        let extendedData = {};
+
+        if (userType === '1') { // Employee
+            extendedData.bench_status = await db('bench_status').where({ id_employee: userId, inactive: 0 }).orderBy('id', 'desc').first() || null;
+            extendedData.skills = await db('employee_skills').where({ id_employee: userId, inactive: 0 }).select('skill_name', 'proficiency_level', 'years_experience');
+        } else if (userType === '2') { // Client
+            extendedData.contracts = await db('client_contracts').where({ id_client: userId, inactive: 0, status: 'active' }).select('contract_type', 'title', 'effective_date', 'expiry_date');
+            extendedData.training_materials = await db('client_training_materials').where({ id_client: userId, inactive: 0 }).select('title', 'file_type');
+        }
+
+        const appData = { user: { ...user, ...extendedData }, settings: settings };
 
         return appData;
     }

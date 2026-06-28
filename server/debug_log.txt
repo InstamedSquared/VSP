@@ -1,0 +1,10 @@
+
+--- updateStaffAssignment ---
+req.user: {"id":1,"t":"0"}
+req.body: {"id_client":"2","id_employee":"3","status":"active","billing_type":"hourly","hourly_rate":"4.50","monthly_rate":"0.00","start_date":"2026-06-28","end_date":"2027-06-28"}
+isAdmin: true
+
+--- updateStaffAssignment ---
+req.user: {"id":1,"t":"0"}
+req.body: {"id_client":"2","id_employee":"3","status":"active","billing_type":"hourly","hourly_rate":"4.50","monthly_rate":"720.00","start_date":"2026-06-28","end_date":"2027-06-28"}
+isAdmin: true

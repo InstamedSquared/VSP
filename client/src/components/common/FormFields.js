@@ -38,10 +38,13 @@ export const FormSelect = ({ label, name, value, defaultValue, error, onChange, 
     return (
         <div className={`input-case ${hasErr ? 'invalid' : ''} ${className}`}>
             {label && <p>{label} <Lbl req={required} sfx={suffix} /></p>}
-            <select ref={inputRef} name={name} value={value} defaultValue={defaultValue} onChange={onChange} onBlur={onBlur} className={inputClass} {...p} required={!!required}>
-                <option value="">{placeholder}</option>
-                {options.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-            </select>
+            <div className="input-group">
+                <select ref={inputRef} name={name} value={value} defaultValue={defaultValue} onChange={onChange} onBlur={onBlur} className={inputClass} {...p} required={!!required}>
+                    <option value="">{placeholder}</option>
+                    {options.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                </select>
+                {hasErr && <Icon icon={icons.invalid} className="input-icon right" />}
+            </div>
             {msg && <em>{msg}</em>}
         </div>
     );
@@ -52,7 +55,10 @@ export const FormTextarea = ({ label, name, value, defaultValue, error, onChange
     return (
         <div className={`input-case ${hasErr ? 'invalid' : ''} ${className}`}>
             {label && <p>{label} <Lbl req={required} sfx={suffix} /></p>}
-            <textarea ref={inputRef} name={name} value={value} defaultValue={defaultValue} onChange={onChange} onBlur={onBlur} placeholder={placeholder} rows={rows} className={inputClass} {...p} required={!!required} />
+            <div className="input-group">
+                <textarea ref={inputRef} name={name} value={value} defaultValue={defaultValue} onChange={onChange} onBlur={onBlur} placeholder={placeholder} rows={rows} className={inputClass} {...p} required={!!required} />
+                {hasErr && <Icon icon={icons.invalid} className="input-icon right" />}
+            </div>
             {msg && <em>{msg}</em>}
         </div>
     );

@@ -24,8 +24,19 @@ const Users = lazy(() => import('./pages/admin/Users'));
 const Profile = lazy(() => import('./pages/admin/Profile'));
 const Settings = lazy(() => import('./pages/admin/Settings'));
 
-
+const Placeholder = lazy(() => import('./pages/admin/Placeholder'));
 const Pending = lazy(() => import('./pages/admin/Pending'));
+const BenchStatus = lazy(() => import('./pages/admin/workforce/BenchStatus'));
+const Skills = lazy(() => import('./pages/admin/workforce/Skills'));
+const Payslips = lazy(() => import('./pages/admin/workforce/Payslips'));
+const Applicants = lazy(() => import('./pages/admin/recruitment/Applicants'));
+const Pipeline = lazy(() => import('./pages/admin/recruitment/Pipeline'));
+const Clients = lazy(() => import('./pages/admin/operations/Clients'));
+const Assignments = lazy(() => import('./pages/admin/operations/Assignments'));
+const Compliance = lazy(() => import('./pages/admin/operations/Compliance'));
+const Invoices = lazy(() => import('./pages/admin/finance/Invoices'));
+const InvoiceDetails = lazy(() => import('./pages/admin/finance/InvoiceDetails'));
+const Payroll = lazy(() => import('./pages/admin/finance/Payroll'));
 const CMSLayout = lazy(() => import('./components/layout/CMSLayout'));
 // const DashboardCms = lazy(() => import('./pages/cms/Dashboard'));
 // const ConsoleEditor = lazy(() => import('./pages/cms/Editor'));
@@ -67,6 +78,22 @@ function App() {
                             <Route path="profile" element={<Profile />} />
                             <Route path="settings" element={<Settings />} />
                             <Route path="pending" element={<Pending />} />
+                            {/* VSP Modules */}
+                            <Route path="workforce/bench" element={<BenchStatus />} />
+                            <Route path="workforce/skills" element={<Skills />} />
+                            <Route path="workforce/payslips" element={<Payslips />} />
+                            <Route path="workforce/*" element={<Placeholder />} />
+                            <Route path="recruitment/applicants" element={<Applicants />} />
+                            <Route path="recruitment/pipeline" element={<Pipeline />} />
+                            <Route path="recruitment/*" element={<Placeholder />} />
+                            <Route path="operations/clients" element={<Clients />} />
+                            <Route path="operations/assignments" element={<Assignments />} />
+                            <Route path="operations/compliance" element={<Compliance />} />
+                            <Route path="operations/*" element={<Placeholder />} />
+                            <Route path="finance/invoices" element={<Invoices />} />
+                            <Route path="finance/invoices/:id" element={<InvoiceDetails />} />
+                            <Route path="finance/payroll" element={<Payroll />} />
+                            <Route path="finance/*" element={<Placeholder />} />
                         </Route>
                     </Route>
 
@@ -84,6 +111,9 @@ function App() {
                         <Route path="/employee" element={<AdminLayout />}>
                             <Route index element={<Dashboard />} />
                             <Route path="profile" element={<Profile />} />
+                            {/* VSP Modules */}
+                            <Route path="lms/*" element={<Placeholder />} />
+                            <Route path="hr/*" element={<Placeholder />} />
                         </Route>
                     </Route>
                     <Route element={<ProtectedRoute allowedRoles={['client']} />}>
@@ -91,7 +121,10 @@ function App() {
                             <Route index element={<Dashboard />} />
                             <Route path="profile" element={<Profile />} />
                             <Route path="settings" element={<Settings />} />
-
+                            {/* VSP Modules */}
+                            <Route path="staffing/*" element={<Placeholder />} />
+                            <Route path="billing/*" element={<Placeholder />} />
+                            <Route path="training/*" element={<Placeholder />} />
                         </Route>
                     </Route>
 

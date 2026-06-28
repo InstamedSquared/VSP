@@ -4,6 +4,25 @@ import Icon from '../common/Icon';
 import { icons } from '../../config/icons';
 
 const sideGroup = {
+    staffing: [{
+        title: 'Staffing', icon: icons.users, links: [
+            { to: '/client/staffing/assigned', label: 'Assigned Staff' },
+            { to: '/client/staffing/replacement', label: 'Replacement Requests' },
+            { to: '/client/staffing/leaves', label: 'Leave Approvals' },
+        ],
+    }],
+    billing: [{
+        title: 'Billing', icon: icons.creditCard, links: [
+            { to: '/client/billing/invoices', label: 'Invoices' },
+            { to: '/client/billing/payments', label: 'Payments' },
+        ],
+    }],
+    training: [{
+        title: 'Training & SOPs', icon: icons.book, links: [
+            { to: '/client/training/materials', label: 'Training Materials' },
+            { to: '/client/training/contracts', label: 'Contracts' },
+        ],
+    }],
 };
 
 const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar, handleLogout }) => {
@@ -33,8 +52,13 @@ const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar
         <aside className={`sidebar ${isMinimized ? 'minimized' : ''}`}>
             <div className='sidebar-content'>
                 <div className='sidebar-head'> <img src={settings?.dashboard_logo ? `/defaults/dashboard/${settings.dashboard_logo}?t=${settingsTimestamp}` : `/defaults/no-image.webp`} alt='Logo' className='logo' loading='lazy' /><h2>{settings?.system || 'Template'}</h2> </div>
-                <nav className='sidebar-nav'>
+                <nav className='sidebar-nav scrollbar-admin'>
                     <div className='a-sidebar'> <NavLink onClick={sidebarLinkClick} to='/client' end className={({ isActive }) => isActive ? 'sidebar-active' : ''} > <Icon icon={icons.layoutDashboard} /> <p>Dashboard</p> </NavLink> </div>
+
+                    <div className='sidebar-lbl'>MODULES</div>
+                    {renderGroup('staffing')}
+                    {renderGroup('billing')}
+                    {renderGroup('training')}
 
                     <div className='sidebar-lbl'>GENERAL</div>
                     <div className='a-sidebar'><NavLink onClick={sidebarLinkClick} to='/client/profile' end className={({ isActive }) => isActive ? 'sidebar-active' : ''} > <Icon icon={icons.profile} /> <p>Profile</p> </NavLink> </div>

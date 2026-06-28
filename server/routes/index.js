@@ -7,6 +7,11 @@ const webController = require('../controllers/webController');
 const cmsController = require('../controllers/cmsController');
 const authController = require('../controllers/authController');
 const { protect, restrictTo } = require('../middleware/authMiddleware');
+const { requirePermission } = require('../middleware/rbacMiddleware');
+const workforceRouter = require('./domain/workforceRouter');
+const recruitmentRouter = require('./domain/recruitmentRouter');
+const operationsRouter = require('./domain/operationsRouter');
+const financeRouter = require('./domain/financeRouter');
 // Import the entire module
 const csrfMiddleware = require('../middleware/csrfMiddleware');
 const path = require('path');
@@ -130,6 +135,12 @@ apiRouter.post('/cms/headers/:id/publish', cmsController.publishHeader);
 // Navigations
 apiRouter.get('/cms/navigations', cmsController.getNavigations);
 apiRouter.put('/cms/navigations', cmsController.updateNavigations);
+
+// --- Domain Routes (v1) ---
+apiRouter.use('/v1/workforce', workforceRouter);
+apiRouter.use('/v1/recruitment', recruitmentRouter);
+apiRouter.use('/v1/operations', operationsRouter);
+apiRouter.use('/v1/finance', financeRouter);
 
 // --- DYNAMIC RESOURCE REGISTRATION ---        // jeric
 const defColumn = ['id', 'fn', 'mn', 'sn', 'gender', 'bday', 'phone', 'email', 'address', 'photo_filename', 'id_position'];
