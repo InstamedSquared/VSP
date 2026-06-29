@@ -12,6 +12,7 @@ const workforceRouter = require('./domain/workforceRouter');
 const recruitmentRouter = require('./domain/recruitmentRouter');
 const operationsRouter = require('./domain/operationsRouter');
 const financeRouter = require('./domain/financeRouter');
+const lmsRouter = require('./domain/lmsRouter');
 // Import the entire module
 const csrfMiddleware = require('../middleware/csrfMiddleware');
 const path = require('path');
@@ -31,6 +32,8 @@ mainRouter.get('/images/projects/:projectId/:filename', mediaController.getProje
 
 // --- Public API Routes (No Auth Required) ---
 const publicRouter = express.Router();
+const clientRequestController = require('../controllers/domain/clientRequestController');
+publicRouter.post('/v1/client-requests/submit', upload.none(), clientRequestController.submitRequest);
 
 mainRouter.use('/api', publicRouter);
 
@@ -141,6 +144,11 @@ apiRouter.use('/v1/workforce', workforceRouter);
 apiRouter.use('/v1/recruitment', recruitmentRouter);
 apiRouter.use('/v1/operations', operationsRouter);
 apiRouter.use('/v1/finance', financeRouter);
+apiRouter.use('/v1/lms', lmsRouter);
+
+// Client Self-Service Routes
+const clientRouter = require('./domain/clientRouter');
+apiRouter.use('/v1/client', clientRouter);
 
 // --- DYNAMIC RESOURCE REGISTRATION ---        // jeric
 const defColumn = ['id', 'fn', 'mn', 'sn', 'gender', 'bday', 'phone', 'email', 'address', 'photo_filename', 'id_position'];

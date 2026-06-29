@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const logger = require('../config/logger');
 
 exports.protect = (req, res, next) => {
     let token;
@@ -8,7 +9,10 @@ exports.protect = (req, res, next) => {
         token = req.headers.authorization.split(' ')[1]; 
     }
 
-    if(!token){ return res.status(401).json({ success: false, message: 'Not authorized, no token provided.' }); }
+    if(!token){ 
+        logger.error('401 NO TOKEN on ' + req.originalUrl); 
+        return res.status(401).json({ success: false, message: 'Not authorized, no token provided.' }); 
+    }
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -17,6 +21,7 @@ exports.protect = (req, res, next) => {
         next();
     } 
     catch(error){ 
+        logger.error('401 INVALID TOKEN on ' + req.originalUrl + ' ' + error.message);
         res.status(401).json({ success: false, message: 'Not authorized, token is invalid or has expired.' }); 
     }
 };

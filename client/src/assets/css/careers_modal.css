@@ -1,0 +1,201 @@
+/* Modal Overlay */
+.careers-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal Content */
+.careers-modal-content {
+    background: #ffffff;
+    width: 100%;
+    max-width: 650px;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px) scale(0.98); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.careers-modal-header {
+    padding: 24px 30px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+}
+
+.careers-modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.careers-modal-close {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+}
+
+.careers-modal-close:hover {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+.careers-modal-body {
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Form overrides inside modal to look premium */
+.careers-modal-body .form-case {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.careers-modal-body .form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.careers-modal-body .input-case p {
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.careers-modal-body input[type="text"],
+.careers-modal-body input[type="email"],
+.careers-modal-body input[type="date"],
+.careers-modal-body select {
+    width: 100%;
+    height: 46px;
+    padding: 0 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #1e293b;
+    transition: all 0.2s;
+    background: #ffffff;
+    box-sizing: border-box;
+    font-family: inherit;
+    line-height: normal;
+}
+
+.careers-modal-body textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #1e293b;
+    transition: all 0.2s;
+    background: #ffffff;
+    box-sizing: border-box;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.careers-modal-body input[type="file"] {
+    width: 100%;
+    height: 46px;
+    padding: 8px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #1e293b;
+    transition: all 0.2s;
+    background: #f8fafc;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.careers-modal-body input:focus,
+.careers-modal-body select:focus,
+.careers-modal-body textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.careers-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.careers-modal-btn-cancel {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.careers-modal-btn-cancel:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.careers-modal-btn-submit {
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+}
+
+.careers-modal-btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -2px rgba(37, 99, 235, 0.4);
+}
+
+.careers-modal-btn-submit:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}

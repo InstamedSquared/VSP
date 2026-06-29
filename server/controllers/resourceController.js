@@ -83,11 +83,15 @@ const createResourceController = (model, resourceName) => ({
     create: async (req, res) => {
         try {
             const data = req.body;
+            let originalPassword = data.pw;
             if (data.pw) { data.pw = await hashPassword(data.pw); }
             else { delete data.pw; }
 
             const customFilename = data.customFilename;
             delete data.customFilename; // Remove from data to be inserted into DB
+            
+            const sendWelcome = data.sendWelcomeEmail;
+            delete data.sendWelcomeEmail;
 
             // Process any HTML/Base64 in fields
             const storagePath = path.resolve(process.env.PHOTO_STORAGE_PATH, 'media');
@@ -99,6 +103,16 @@ const createResourceController = (model, resourceName) => ({
 
             const fileToSave = await processImage(req.file, model.fileConfig?.imageProcessing, customFilename);
             const newRecord = await model.insert(data, fileToSave);
+            
+            if (sendWelcome && sendWelcome !== 'false' && data.email && data.un && originalPassword) {
+                try {
+                    const emailService = require('../services/emailService');
+                    const fullName = `${data.fn} ${data.mn ? data.mn + ' ' : ''}${data.sn}`.trim();
+                    await emailService.sendWelcomeEmail(data.email, data.un, originalPassword, fullName);
+                } catch(emailErr) {
+                    console.error('Failed to send welcome email:', emailErr);
+                }
+            }
 
             // Invalidate cache
             await redisClient.incr(`${process.env.REDIS_PREFIX || ''}resource_version:${model.tableName}`);

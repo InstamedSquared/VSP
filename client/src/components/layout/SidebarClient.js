@@ -4,11 +4,16 @@ import Icon from '../common/Icon';
 import { icons } from '../../config/icons';
 
 const sideGroup = {
-    staffing: [{
-        title: 'Staffing', icon: icons.users, links: [
-            { to: '/client/staffing/assigned', label: 'Assigned Staff' },
-            { to: '/client/staffing/replacement', label: 'Replacement Requests' },
-            { to: '/client/staffing/leaves', label: 'Leave Approvals' },
+    workforce: [{
+        title: 'Workforce', icon: icons.users, links: [
+            { to: '/client/workforce/team', label: 'My Team' },
+            { to: '/client/workforce/skills', label: 'Skills Inventory' },
+            { to: '/client/workforce/leaves', label: 'Leave Approvals' },
+        ],
+    }],
+    recruitment: [{
+        title: 'Recruitment', icon: icons.userPlus, links: [
+            { to: '/client/recruitment/replacements', label: 'Replacement Requests' },
         ],
     }],
     billing: [{
@@ -56,7 +61,8 @@ const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar
                     <div className='a-sidebar'> <NavLink onClick={sidebarLinkClick} to='/client' end className={({ isActive }) => isActive ? 'sidebar-active' : ''} > <Icon icon={icons.layoutDashboard} /> <p>Dashboard</p> </NavLink> </div>
 
                     <div className='sidebar-lbl'>MODULES</div>
-                    {renderGroup('staffing')}
+                    {renderGroup('workforce')}
+                    {renderGroup('recruitment')}
                     {renderGroup('billing')}
                     {renderGroup('training')}
 

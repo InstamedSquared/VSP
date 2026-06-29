@@ -8,3 +8,8 @@ isAdmin: true
 req.user: {"id":1,"t":"0"}
 req.body: {"id_client":"2","id_employee":"3","status":"active","billing_type":"hourly","hourly_rate":"4.50","monthly_rate":"720.00","start_date":"2026-06-28","end_date":"2027-06-28"}
 isAdmin: true
+
+--- createStaffAssignment ---
+req.user: {"id":1,"t":"0"}
+req.body: {"id_client":"4","id_employee":"4","status":"active","billing_type":"monthly","hourly_rate":"5","monthly_rate":"800","start_date":"2026-07-01","end_date":"2026-12-31"}
+isAdmin: true

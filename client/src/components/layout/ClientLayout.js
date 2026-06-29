@@ -20,7 +20,7 @@ const ClientLayout = () => {
     } = useAuth();
 
     const navigate = useNavigate();
-    const handleLogout = (e) => { e.preventDefault(); logout(); navigate('/login'); };
+    const handleLogout = async (e) => { e.preventDefault(); await logout(); navigate('/login'); };
 
     const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);

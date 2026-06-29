@@ -30,6 +30,8 @@ const TableForm = ({ item, onSave, apiService }) => {
         phone: isEditMode ? item.phone ?? '' : '',
         email: isEditMode ? item.email ?? '' : '',
         address: isEditMode ? item.address ?? '' : '',
+        un: isEditMode ? item.un ?? '' : '',
+        pw: '',
     }, schema);
 
     useEffect(() => {
@@ -62,6 +64,9 @@ const TableForm = ({ item, onSave, apiService }) => {
         if (photoFile) {
             formData.append('photo', photoFile);
         }
+        if (!isEditMode) {
+            formData.append('sendWelcomeEmail', 'true');
+        }
         onSave(formData, item?.id);
     };
 
@@ -81,7 +86,16 @@ const TableForm = ({ item, onSave, apiService }) => {
                     <FormInput label="Last Name" name="sn" placeholder="Last Name" value={values.sn} error={errors.sn} onChange={handleChange} required />
                 </div>
             </div>
+            
             <div className="form-dvr"></div>
+            <h4 style={{ paddingLeft: '5px', margin: '10px 0 0 0' }}>Account Credentials</h4>
+            <div className="form-row">
+                <FormInput label="Username" name="un" placeholder="Username" value={values.un} onChange={handleChange} required={!isEditMode} disabled={isEditMode} className="w5" />
+                <FormInput label="Password" type="password" name="pw" placeholder="Initial Password" value={values.pw} onChange={handleChange} required={!isEditMode} disabled={isEditMode} className="w5" />
+            </div>
+
+            <div className="form-dvr"></div>
+            <h4 style={{ paddingLeft: '5px', margin: '10px 0 0 0' }}>Personal Information</h4>
             <div className="form-row">
                 <FormSelect label="Gender" name="gender" value={values.gender} error={errors.gender} onChange={handleChange} required options={[{ value: '1', label: 'Male' }, { value: '2', label: 'Female' }]} className="w5" />
                 <FormInput label="Birthday" name="bday" type="date" value={values.bday} error={errors.bday} onChange={handleChange} required className="w5" />

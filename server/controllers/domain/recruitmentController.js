@@ -29,27 +29,36 @@ exports.getApplicants = async (req, res) => {
     try {
         const { page = 1, limit = 10, search = '', sortBy = 'id', sortOrder = 'desc' } = req.query;
         
-        const query = db('applicants').where('inactive', 0);
+        const query = db('applicants')
+            .leftJoin('job_postings', 'applicants.id_job_posting', 'job_postings.id')
+            .leftJoin('recruitment_stages', function() {
+                this.on('applicants.id', '=', 'recruitment_stages.id_applicant')
+                    .andOn('recruitment_stages.inactive', '=', db.raw('?', [0]))
+            })
+            .where('applicants.inactive', 0);
 
         if (search) {
             query.andWhere(builder => {
-                builder.where('fn', 'like', `%${search}%`)
-                       .orWhere('sn', 'like', `%${search}%`)
-                       .orWhere('email', 'like', `%${search}%`)
-                       .orWhere('phone', 'like', `%${search}%`);
+                builder.where('applicants.fn', 'like', `%${search}%`)
+                       .orWhere('applicants.sn', 'like', `%${search}%`)
+                       .orWhere('applicants.email', 'like', `%${search}%`)
+                       .orWhere('applicants.phone', 'like', `%${search}%`)
+                       .orWhere('job_postings.title', 'like', `%${search}%`);
             });
         }
 
-        const countQuery = query.clone().count('id as total').first();
+        const countQuery = query.clone().count('applicants.id as total').first();
         const { total } = await countQuery;
         const totalRecords = parseInt(total, 10);
 
         const offset = (page - 1) * limit;
         const data = await query.clone()
             .select(
-                'id', 'fn', 'mn', 'sn', 'email', 'phone', 'resume_path', 'source', 'status', 'gender', 'bday', 'photo_filename'
+                'applicants.id', 'applicants.fn', 'applicants.mn', 'applicants.sn', 'applicants.email', 'applicants.phone', 
+                'applicants.resume_path', 'applicants.source', 'applicants.status', 'applicants.gender', 'applicants.bday', 
+                'applicants.photo_filename', 'applicants.remarks', 'job_postings.title as job_title', 'recruitment_stages.stage as pipeline_stage'
             )
-            .orderBy(sortBy, sortOrder)
+            .orderBy(`applicants.${sortBy}`, sortOrder)
             .limit(limit)
             .offset(offset);
 
@@ -78,6 +87,61 @@ exports.createApplicant = async (req, res) => {
         res.status(201).json({ success: true, message: 'Applicant created successfully', id });
     } catch (error) {
         console.error('Error creating applicant:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+const processResume = async (file, id) => {
+    if (!file) return null;
+    const targetDir = path.resolve(process.env.PHOTO_STORAGE_PATH || '../private_storage', 'applicants', String(id), 'resumes');
+    await fs.mkdir(targetDir, { recursive: true });
+    
+    const finalName = file.originalname;
+    const finalPath = path.join(targetDir, finalName);
+    
+    await fs.rename(file.path, finalPath).catch(async () => {
+        // Fallback to copy/unlink if rename fails across devices
+        await fs.copyFile(file.path, finalPath);
+        await fs.unlink(file.path).catch(() => {});
+    });
+    return finalName;
+};
+
+exports.publicApply = async (req, res) => {
+    try {
+        const { fn, mn, sn, email, phone, gender, bday, id_job_posting, cover_letter } = req.body;
+        
+        if (!fn || !sn || !email) {
+            return res.status(400).json({ success: false, message: 'First Name, Last Name, and Email are required.' });
+        }
+
+        const data = {
+            fn, mn: mn || null, sn, email, phone,
+            gender: gender || null,
+            bday: bday || null,
+            id_job_posting: id_job_posting || null,
+            remarks: cover_letter || null,
+            source: 'website',
+            status: 'applied'
+        };
+
+        const [id] = await db('applicants').insert(data);
+        
+        if (req.file) {
+            const resume_filename = await processResume(req.file, id);
+            await db('applicants').where({ id }).update({ resume_path: resume_filename });
+        }
+
+        // Also add an initial pipeline stage
+        await db('recruitment_stages').insert({
+            id_applicant: id,
+            stage: 'applied',
+            notes: 'Application submitted via public website'
+        });
+
+        res.status(201).json({ success: true, message: 'Application submitted successfully', id });
+    } catch (error) {
+        console.error('Error processing public application:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
@@ -146,6 +210,109 @@ exports.getPhoto = async (req, res) => {
     } catch (error) {
         console.error('Error getting photo:', error);
         res.status(500).send('Server Error');
+    }
+};
+
+exports.getResume = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const record = await db('applicants').where({ id }).select('resume_path').first();
+        if (!record || !record.resume_path) return res.status(404).send('Resume not found');
+
+        const resumePath = path.resolve(process.env.PHOTO_STORAGE_PATH || '../private_storage', 'applicants', String(id), 'resumes', record.resume_path);
+        if (fsSync.existsSync(resumePath)) {
+            res.download(resumePath);
+        } else {
+            res.status(404).send('Resume not found');
+        }
+    } catch (error) {
+        console.error('Error getting resume:', error);
+        res.status(500).send('Server Error');
+    }
+};
+
+// --- Employee Conversion ---
+exports.convertApplicant = async (req, res) => {
+    const trx = await db.transaction();
+    try {
+        const { id } = req.params;
+        const applicant = await trx('applicants').where({ id, inactive: 0 }).first();
+        
+        if (!applicant) {
+            await trx.rollback();
+            return res.status(404).json({ success: false, message: 'Applicant not found or already inactive' });
+        }
+
+        // Generate temporary password
+        const crypto = require('crypto');
+        const tempPassword = crypto.randomBytes(4).toString('hex'); // 8 char temp password
+        const bcrypt = require('bcryptjs');
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+        // Insert into employees
+        const [employeeId] = await trx('employees').insert({
+            fn: applicant.fn,
+            mn: applicant.mn,
+            sn: applicant.sn,
+            gender: applicant.gender,
+            bday: applicant.bday,
+            email: applicant.email,
+            phone: applicant.phone,
+            un: applicant.email, // Use email as username
+            pw: hashedPassword,
+            photo_filename: applicant.photo_filename,
+            created_by: req.user?.id,
+            created_at: db.fn.now()
+        });
+
+        // Insert resume into employee_documents if exists
+        if (applicant.resume_path) {
+            await trx('employee_documents').insert({
+                id_employee: employeeId,
+                document_type: 'resume',
+                title: 'Application Resume',
+                file_path: applicant.resume_path,
+                created_by: req.user?.id,
+                created_at: db.fn.now()
+            });
+        }
+
+        // Mark applicant as inactive
+        await trx('applicants').where({ id }).update({
+            inactive: 1,
+            changelog: JSON.stringify([{ timestamp: new Date().toISOString(), userId: req.user?.id, changes: { converted_to_employee: true, new_employee_id: employeeId } }])
+        });
+
+        // Also mark their pipeline record as inactive
+        await trx('recruitment_stages').where({ id_applicant: id }).update({
+            inactive: 1
+        });
+
+        await trx.commit();
+
+        // Send welcome email
+        const emailService = require('../../services/emailService');
+        const fullName = `${applicant.fn} ${applicant.sn}`.trim();
+        const emailResult = await emailService.sendWelcomeEmail(applicant.email, applicant.email, tempPassword, fullName);
+        
+        let msg = 'Applicant successfully converted to employee';
+        if (emailResult.success) {
+            msg += ' and welcome email sent.';
+        } else {
+            msg += ', but failed to send welcome email.';
+            console.error('Email failed:', emailResult.error);
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: msg,
+            tempPassword: tempPassword,
+            email: applicant.email
+        });
+    } catch (error) {
+        await trx.rollback();
+        console.error('Error converting applicant:', error);
+        res.status(500).json({ success: false, message: 'Server Error during conversion' });
     }
 };
 

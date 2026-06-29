@@ -252,3 +252,99 @@ exports.downloadComplianceDoc = async (req, res) => {
     }
 };
 
+// --- Announcements ---
+
+exports.getAnnouncements = async (req, res) => {
+    try {
+        const { page = 1, limit = 10, search = '', sortBy = 'id', sortOrder = 'desc' } = req.query;
+
+        const query = db('announcements').where('inactive', 0);
+
+        if (search) {
+            query.andWhere('title', 'like', `%${search}%`);
+        }
+
+        const countQuery = query.clone().count('id as total').first();
+        const { total } = await countQuery;
+        const totalRecords = parseInt(total, 10);
+
+        const offset = (page - 1) * limit;
+        const data = await query.clone()
+            .orderBy(sortBy, sortOrder)
+            .limit(limit)
+            .offset(offset);
+
+        res.status(200).json({ data, totalRecords });
+    } catch (error) {
+        console.error('Error fetching announcements:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+exports.createAnnouncement = async (req, res) => {
+    try {
+        const data = {
+            ...req.body,
+            created_by: req.user?.id || null,
+        };
+        if (data.published_at === '') data.published_at = null;
+        if (data.expires_at === '') data.expires_at = null;
+
+        const [id] = await db('announcements').insert(data);
+        res.status(201).json({ success: true, message: 'Announcement created successfully', id });
+    } catch (error) {
+        console.error('Error creating announcement:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+exports.updateAnnouncement = async (req, res) => {
+    try {
+        const data = { ...req.body };
+        const id = req.params.id;
+
+        if (data.published_at === '') data.published_at = null;
+        if (data.expires_at === '') data.expires_at = null;
+
+        // Fetch old record for changelog
+        const oldRecord = await db('announcements').where({ id }).first();
+        if (!oldRecord) return res.status(404).json({ success: false, message: 'Not found' });
+
+        const excludedColumns = ['changelog', 'inactive'];
+        const changes = {};
+        for (const key in data) {
+            if (!excludedColumns.includes(key) && String(oldRecord[key]) !== String(data[key])) {
+                changes[key] = { from: oldRecord[key], to: data[key] };
+            }
+        }
+
+        if (Object.keys(changes).length > 0) {
+            let existing = [];
+            try { existing = oldRecord.changelog ? JSON.parse(oldRecord.changelog) : []; } catch { existing = []; }
+            existing.unshift({ timestamp: new Date().toISOString(), userId: req.user?.id, changes });
+            data.changelog = JSON.stringify(existing);
+        }
+
+        await db('announcements').where({ id }).update(data);
+        res.status(200).json({ success: true, message: 'Announcement updated successfully' });
+    } catch (error) {
+        console.error('Error updating announcement:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+exports.deleteAnnouncement = async (req, res) => {
+    try {
+        await db('announcements').where({ id: req.params.id }).update({
+            inactive: 1,
+            deleted_by: req.user?.id,
+            deleted_at: db.fn.now()
+        });
+        res.status(200).json({ success: true, message: 'Announcement deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting announcement:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+

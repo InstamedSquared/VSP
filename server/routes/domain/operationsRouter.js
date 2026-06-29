@@ -20,4 +20,17 @@ router.put('/compliance/:id', requirePermission('compliance', 'write'), docUploa
 router.patch('/compliance/:id/delete', requirePermission('compliance', 'delete'), operationsController.deleteComplianceRecord);
 router.get('/compliance/:id/download', requirePermission('compliance', 'read'), operationsController.downloadComplianceDoc);
 
+// Announcements CRUD
+router.get('/announcements', requirePermission('operations', 'read'), operationsController.getAnnouncements);
+router.post('/announcements', requirePermission('operations', 'write'), upload.none(), operationsController.createAnnouncement);
+router.put('/announcements/:id', requirePermission('operations', 'write'), upload.none(), operationsController.updateAnnouncement);
+router.patch('/announcements/:id/delete', requirePermission('operations', 'delete'), operationsController.deleteAnnouncement);
+
+// Client Requests CRUD (Admin)
+const clientRequestController = require('../../controllers/domain/clientRequestController');
+router.get('/client-requests', requirePermission('operations', 'read'), clientRequestController.getRequests);
+router.put('/client-requests/:id', requirePermission('operations', 'write'), upload.none(), clientRequestController.updateRequest);
+router.patch('/client-requests/:id/delete', requirePermission('operations', 'delete'), clientRequestController.deleteRequest);
+router.post('/client-requests/:id/approve', requirePermission('operations', 'write'), clientRequestController.approveRequest);
+
 module.exports = router;

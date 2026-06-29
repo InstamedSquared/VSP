@@ -7,12 +7,13 @@ class UserModel extends ResourceModel {
 
     async userAuth(identifier) {
         const query = `
-        (SELECT id, un, pw, '0' as t FROM users WHERE inactive=0 AND un = ? )
-        UNION ALL
-        (SELECT id, un, pw, '1' as t FROM employees WHERE inactive=0 AND un = ? )
-        UNION ALL
-        (SELECT id, un, pw, '2' as t FROM clients WHERE inactive=0 AND un = ? )
-        LIMIT 1 `;
+        SELECT * FROM (
+            (SELECT id, un, pw, '0' as t FROM users WHERE inactive=0 AND un = ? ORDER BY id DESC LIMIT 1)
+            UNION ALL
+            (SELECT id, un, pw, '1' as t FROM employees WHERE inactive=0 AND un = ? ORDER BY id DESC LIMIT 1)
+            UNION ALL
+            (SELECT id, un, pw, '2' as t FROM clients WHERE inactive=0 AND un = ? ORDER BY id DESC LIMIT 1)
+        ) as combined LIMIT 1`;
 
         const bindings = [identifier, identifier, identifier];
         const results = await this.query(query, bindings);

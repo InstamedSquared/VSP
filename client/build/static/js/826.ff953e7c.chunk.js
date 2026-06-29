@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkclient=self.webpackChunkclient||[]).push([[826],{2826:(e,s,l)=>{l.r(s),l.d(s,{default:()=>i});l(5043);var a=l(579);const i=()=>(0,a.jsx)("div",{className:"admin-pager",children:(0,a.jsxs)("div",{className:"pagelet",children:[(0,a.jsx)("div",{className:"pagelet-head",children:(0,a.jsx)("h4",{children:"Module Under Construction"})}),(0,a.jsx)("div",{className:"pagelet-body",children:(0,a.jsx)("p",{children:"This module is currently being built in Phase 2 of the VSP Roadmap."})})]})})}}]);
+//# sourceMappingURL=826.ff953e7c.chunk.js.map

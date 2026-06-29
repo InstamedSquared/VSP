@@ -16,6 +16,7 @@ import './assets/css/loaders.css';
 import './assets/css/admin.css';
 import './assets/css/table.css';
 import './assets/css/structure.css';
+import './assets/css/kanban.css';
 
 
 import './assets/css/web.css';
@@ -30,20 +31,18 @@ const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <ModalProvider>
-                <NotificationProvider>
-                    <AuthProvider>
-                        <CMSProvider>
-                            <PopupMenuProvider>
-                                <TooltipProvider>
-                                    <App />
-                                </TooltipProvider>
-                            </PopupMenuProvider>
-                        </CMSProvider>
-                    </AuthProvider>
-                </NotificationProvider>
-            </ModalProvider>
-        </QueryClientProvider>
-    </React.StrictMode>);
+    <QueryClientProvider client={queryClient}>
+        <ModalProvider>
+            <NotificationProvider>
+                <AuthProvider>
+                    <CMSProvider>
+                        <PopupMenuProvider>
+                            <TooltipProvider>
+                                <App />
+                            </TooltipProvider>
+                        </PopupMenuProvider>
+                    </CMSProvider>
+                </AuthProvider>
+            </NotificationProvider>
+        </ModalProvider>
+    </QueryClientProvider>);

@@ -177,6 +177,7 @@ import {
     Layers,
     Droplet,
     Image,
+    BookOpen,
     AlignEndHorizontal,
     AlignEndVertical,
     AlignCenterHorizontal,
@@ -278,6 +279,7 @@ export const iconCategories = {
         move: Move,
         hand: Hand,
         locateFixed: LocateFixed,
+        book: BookOpen,
     },
     'Actions': {
         add: PlusSquare,

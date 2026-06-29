@@ -24,7 +24,7 @@ export const ModalProvider = ({ children }) => {
         title = '',
         content,
         actions = [],
-        closeOnBackdropClick = true,
+        closeOnBackdropClick = false,
         isDraggable = true,
         isAlert = false,
         duration = 0,

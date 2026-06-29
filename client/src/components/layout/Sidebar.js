@@ -8,6 +8,7 @@ const adminGroup = {
         title: 'Workforce', icon: icons.users, links: [
             { to: '/admin/workforce/bench', label: 'Bench Status' },
             { to: '/admin/workforce/skills', label: 'Skills Inventory' },
+            { to: '/admin/workforce/documents', label: 'HR Documents' },
             { to: '/admin/workforce/payslips', label: 'Payslips' },
         ],
     }],
@@ -15,10 +16,12 @@ const adminGroup = {
         title: 'Recruitment', icon: icons.userPlus, links: [
             { to: '/admin/recruitment/applicants', label: 'Applicants' },
             { to: '/admin/recruitment/pipeline', label: 'Pipeline' },
+            { to: '/admin/recruitment/jobs', label: 'Job Postings' },
         ],
     }],
     operations: [{
         title: 'Operations', icon: icons.settings, links: [
+            { to: '/admin/operations/client-requests', label: 'Client Requests' },
             { to: '/admin/operations/assignments', label: 'Staff Assignments' },
             { to: '/admin/operations/compliance', label: 'Compliance' },
             { to: '/admin/operations/announcements', label: 'Announcements' },
@@ -28,6 +31,11 @@ const adminGroup = {
         title: 'Finance', icon: icons.banking, links: [
             { to: '/admin/finance/invoices', label: 'Invoices' },
             { to: '/admin/finance/payroll', label: 'Payroll' },
+        ],
+    }],
+    lms: [{
+        title: 'Learning', icon: icons.book, links: [
+            { to: '/admin/lms/courses', label: 'Course Catalog' }
         ],
     }],
 };
@@ -41,13 +49,20 @@ const empGroup = {
     }],
     hr: [{
         title: 'HR', icon: icons.user, links: [
+            { to: '/employee/hr/documents', label: 'My Documents' },
             { to: '/employee/hr/payslips', label: 'My Payslips' },
             { to: '/employee/hr/leaves', label: 'Leave Requests' },
         ],
     }],
 };
 
-const clientGroup = {}; // Clients handled in SidebarClient.js
+const clientGroup = {
+    lms: [{
+        title: 'Learning', icon: icons.book, links: [
+            { to: '/client/lms/courses', label: 'Course Catalog' }
+        ],
+    }],
+}; // Clients handled in SidebarClient.js
 
 
 const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar, handleLogout }) => {
@@ -107,6 +122,7 @@ const Sidebar = ({ user, settings, settingsTimestamp, isMinimized, toggleSidebar
                             {renderGroup('recruitment')}
                             {renderGroup('operations')}
                             {renderGroup('finance')}
+                            {renderGroup('lms')}
 
                             <div className='sidebar-lbl'>SETTINGS</div>
                             <div className='a-sidebar'> <NavLink onClick={handleLinkClick} to='/admin/settings' className={({ isActive }) => (isActive ? 'sidebar-active' : '')}> <Icon icon={icons.settings} /> <p>Settings</p> </NavLink> </div>

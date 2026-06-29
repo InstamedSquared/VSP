@@ -406,7 +406,7 @@ const DataTable = forwardRef(({
             }
         }
 
-        if (allActions.length === 0) return null;
+        if (allActions.length === 0) return <div className='td td-action'></div>;
 
         // If actions <= 2, show all as single buttons
         if (allActions.length <= 2) {

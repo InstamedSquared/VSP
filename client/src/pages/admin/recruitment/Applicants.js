@@ -49,6 +49,7 @@ const TableForm = ({ item, onSave, apiService }) => {
         bday: isEditMode ? (item.bday ? item.bday.split('T')[0] : '') : '',
         source: isEditMode ? item.source ?? '' : '',
         status: isEditMode ? item.status ?? 'applied' : 'applied',
+        remarks: isEditMode ? item.remarks ?? '' : '',
     }, schema);
 
     const handleSave = (formValues) => {
@@ -89,6 +90,12 @@ const TableForm = ({ item, onSave, apiService }) => {
                 <FormInput label="Email Address" name="email" type="email" value={values.email} error={errors.email} onChange={handleChange} required className="w5" />
                 <FormInput label="Phone Number" name="phone" value={values.phone} error={errors.phone} onChange={handleChange} required className="w5" />
             </div>
+            <div className="form-row" style={{ display: 'block' }}>
+                <div className="input-case">
+                    <p>Cover Letter / Remarks</p>
+                    <textarea name="remarks" value={values.remarks} onChange={handleChange} rows="4" style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '4px' }}></textarea>
+                </div>
+            </div>
             <div className="form-row">
                 <FormSelect label="Source" name="source" value={values.source} error={errors.source} onChange={handleChange} required options={[
                     { value: 'website', label: 'Website' },
@@ -115,12 +122,43 @@ const TableForm = ({ item, onSave, apiService }) => {
 const Applicants = () => {
     const [photoOverrides, setPhotoOverrides] = React.useState({});
     const initialLoadTime = React.useMemo(() => Date.now(), []);
+    const { notify } = require('../../../context/NotificationContext').useNotifier();
+    const { openPopup, closePopup } = require('../../../context/ModalContext').useModal();
+    const { icons } = require('../../../config/icons');
 
     const handleSaveSuccess = React.useCallback((itemId, formData) => {
         if (itemId && formData && formData.has('photo')) {
             setPhotoOverrides(prev => ({ ...prev, [itemId]: Date.now() }));
         }
     }, []);
+
+    const handleConvertApplicant = (item) => {
+        const proceed = async () => {
+            try {
+                const api = require('../../../api/api').default;
+                const res = await api.post(`/api/v1/recruitment/applicants/${item.id}/convert`);
+                if (res.data.success) {
+                    notify({ message: 'Converted successfully. Temp Password: ' + res.data.tempPassword, style: 'success' });
+                    closePopup();
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error("Error converting applicant", error);
+                notify({ message: error.response?.data?.message || 'Failed to convert', style: 'error' });
+                closePopup();
+            }
+        };
+
+        openPopup({
+            title: `Confirm Conversion`,
+            widthClass: 'w-md',
+            content: <p>Are you sure you want to convert <strong>{item.fn} {item.sn}</strong> to an employee? <br />This will generate their account and send a welcome email.</p>,
+            actions: [
+                { text: 'Cancel', icon: icons.times, className: 'btn-secondary', onClick: closePopup },
+                { text: 'Yes, Convert', icon: icons.userPlus, className: 'btn-primary', onClick: proceed }
+            ]
+        });
+    };
 
     const tableColumns = React.useMemo(() => [
         {
@@ -133,7 +171,10 @@ const Applicants = () => {
                 return (
                     <div className='td-user'>
                         <div className='td-user-photo'><img src={displayUrl} alt="avatar" loading='lazy' onError={(e) => { e.target.onerror = null; e.target.src = `/defaults/avatar.png`; }} /></div>
-                        <div className='tr-name'><b>{`${item.fn} ${item.sn}`}</b></div>
+                        <div className='tr-name'>
+                            <b>{`${item.fn} ${item.sn}`}</b>
+                            {item.job_title && <div style={{ fontSize: '0.85em', color: '#64748b', marginTop: '2px' }}>Applied: {item.job_title}</div>}
+                        </div>
                     </div>
                 );
             }
@@ -144,8 +185,6 @@ const Applicants = () => {
                 <div className="gray-text">{item.phone}</div>
             </div>
         ) },
-        { key: 'gender', label: 'Gender', type: 1, sortable: true, render: (item) => (item.gender === '1' ? 'Male' : (item.gender === '2') ? 'Female' : '') },
-        { key: 'bday', label: 'Birthday', type: 1, sortable: true, render: (item) => { return item.bday ? moment(item.bday).format('MMM. DD, YYYY') : ''; } },
         { key: 'source', label: 'Source', type: 1, sortable: true, render: (item) => {
             const map = { website: 'Website', referral: 'Referral', job_board: 'Job Board', social_media: 'Social Media' };
             return map[item.source] || item.source;
@@ -156,8 +195,15 @@ const Applicants = () => {
                 interview: 'Interview', client_interview: 'Client Interview',
                 hired: 'Hired', pool: 'Talent Pool', reprofile: 'Reprofile', rejected: 'Rejected'
             };
-            return <b>{map[item.status] || item.status}</b>;
-        } }
+            return <b>{map[item.pipeline_stage || item.status] || (item.pipeline_stage || item.status)}</b>;
+        } },
+        { key: 'resume', label: 'Resume', type: 1, sortable: false, render: (item) => (
+            item.resume_path ? (
+                <a href={`/api/v1/recruitment/applicants/${item.id}/resume`} target="_blank" rel="noopener noreferrer" className="btn btn-sm" style={{ padding: '4px 8px', fontSize: '12px' }}>
+                    <i className="fi fi-rr-download" style={{ marginRight: '5px' }}></i> Resume
+                </a>
+            ) : <span className="gray-text">No Resume</span>
+        ) }
     ], []);
 
     return (
@@ -171,7 +217,15 @@ const Applicants = () => {
                 title: <span><h2>Applicants Pipeline</h2><p>Manage incoming recruitment candidates</p></span>, 
                 modalWidth: 'w-mm',
                 useJson: true,
-                onSaveSuccess: handleSaveSuccess
+                onSaveSuccess: handleSaveSuccess,
+                rowActions: [
+                    {
+                        text: 'Convert to Employee',
+                        icon: require('../../../config/icons').icons.userPlus,
+                        onClick: handleConvertApplicant,
+                        disabled: (item) => item.pipeline_stage !== 'hired'
+                    }
+                ]
             }}
         />
     );

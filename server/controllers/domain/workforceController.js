@@ -279,3 +279,115 @@ exports.getPayslips = async (req, res) => {
     }
 };
 
+
+// --- Employee Documents (Admin) ---
+exports.getDocuments = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
+        const data = await db('employee_documents').where({ inactive: 0 }).limit(limit).offset(offset);
+        const [{ total }] = await db('employee_documents').where({ inactive: 0 }).count('id as total');
+        res.status(200).json({ data, totalRecords: parseInt(total) });
+    } catch (e) { res.status(500).json({ success: false, message: 'Server Error' }); }
+};
+exports.createDocument = async (req, res) => {
+    try {
+        const file_path = req.file ? '/uploads/' + req.file.filename : null;
+        await db('employee_documents').insert({ ...req.body, file_path, created_by: req.user.id });
+        res.status(201).json({ success: true, message: 'Document created' });
+    } catch (e) { res.status(500).json({ success: false, message: 'Server Error' }); }
+};
+exports.updateDocument = async (req, res) => {
+    try {
+        const updateData = { ...req.body, updated_at: db.fn.now() };
+        if (req.file) updateData.file_path = '/uploads/' + req.file.filename;
+        await db('employee_documents').where({ id: req.params.id }).update(updateData);
+        res.status(200).json({ success: true, message: 'Document updated' });
+    } catch (e) { res.status(500).json({ success: false, message: 'Server Error' }); }
+};
+exports.deleteDocument = async (req, res) => {
+    try {
+        await db('employee_documents').where({ id: req.params.id }).update({ inactive: 1, deleted_by: req.user.id, deleted_at: db.fn.now() });
+        res.status(200).json({ success: true, message: 'Document deleted' });
+    } catch (e) { res.status(500).json({ success: false, message: 'Server Error' }); }
+};
+
+// --- Employee Self-Service Endpoints ---
+exports.getMyPayslips = async (req, res) => {
+    try {
+        const data = await db('payrolls').where({ id_employee: req.user.id, inactive: 0 });
+        res.status(200).json({ data, totalRecords: data.length });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+exports.getMyLeaves = async (req, res) => {
+    try {
+        const data = await db('leave_requests').where({ id_employee: req.user.id, inactive: 0 });
+        res.status(200).json({ data, totalRecords: data.length });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+exports.createMyLeave = async (req, res) => {
+    try {
+        await db('leave_requests').insert({ ...req.body, id_employee: req.user.id, status: 'pending', created_by: req.user.id });
+        res.status(201).json({ success: true, message: 'Leave requested' });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+exports.updateMyLeave = async (req, res) => {
+    try {
+        await db('leave_requests').where({ id: req.params.id, id_employee: req.user.id }).update({ ...req.body, updated_at: db.fn.now() });
+        res.status(200).json({ success: true, message: 'Leave updated' });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+exports.deleteMyLeave = async (req, res) => {
+    try {
+        await db('leave_requests').where({ id: req.params.id, id_employee: req.user.id }).update({ inactive: 1, deleted_at: db.fn.now() });
+        res.status(200).json({ success: true, message: 'Leave deleted' });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+
+exports.getMyDocuments = async (req, res) => {
+    try {
+        const data = await db('employee_documents').where({ id_employee: req.user.id, inactive: 0 });
+        res.status(200).json({ data, totalRecords: data.length });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+exports.uploadMyDocument = async (req, res) => {
+    try {
+        const file_path = req.file ? '/uploads/' + req.file.filename : null;
+        await db('employee_documents').insert({ ...req.body, id_employee: req.user.id, file_path, created_by: req.user.id });
+        res.status(201).json({ success: true, message: 'Document uploaded' });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+exports.deleteMyDocument = async (req, res) => {
+    try {
+        await db('employee_documents').where({ id: req.params.id, id_employee: req.user.id }).update({ inactive: 1, deleted_at: db.fn.now() });
+        res.status(200).json({ success: true, message: 'Document deleted' });
+    } catch (e) { res.status(500).json({ success: false }); }
+};
+
+// --- Reprofile Toggle ---
+exports.toggleReprofile = async (req, res) => {
+    try {
+        const employeeId = req.user.id;
+        const { is_reprofiling } = req.body;
+        const existingRecord = await db('bench_status').where({ id_employee: employeeId, inactive: 0 }).first();
+        if (is_reprofiling) {
+            if (!existingRecord) {
+                await db('bench_status').insert({ id_employee: employeeId, status: 'available', available_date: db.fn.now(), notes: 'Requested via portal', created_by: employeeId });
+            } else {
+                await db('bench_status').where({ id: existingRecord.id }).update({ status: 'available', notes: 'Requested via portal', updated_at: db.fn.now() });
+            }
+        } else {
+            if (existingRecord) {
+                await db('bench_status').where({ id: existingRecord.id }).update({ inactive: 1, deleted_by: employeeId, deleted_at: db.fn.now() });
+            }
+        }
+        res.status(200).json({ success: true, message: 'Reprofile status updated' });
+    } catch (error) { res.status(500).json({ success: false }); }
+};
+
+exports.getMyBenchStatus = async (req, res) => {
+    try {
+        const existingRecord = await db('bench_status').where({ id_employee: req.user.id, inactive: 0 }).first();
+        res.status(200).json({ success: true, data: existingRecord || null });
+    } catch (error) { res.status(500).json({ success: false }); }
+};

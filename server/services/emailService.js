@@ -159,62 +159,65 @@ const sendPasswordResetEmail = async (email, resetToken, fullName = '') => {
 };
 
 // Send welcome email
-const sendWelcomeEmail = async (email, username = '') => {
+const sendWelcomeEmail = async (email, username = '', tempPassword = '', fullName = '') => {
   try {
     const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',')[0] : 'http://localhost:3010';
     const loginUrl = `${clientUrl}/login`;
 
     const mailOptions = {
       from: {
-        name: 'Your App Support',
+        name: 'VSP Recruitment',
         address: emailConfig.auth.user
       },
       to: email,
-      subject: 'Welcome to Our Service',
+      subject: 'Welcome to VSP! Your Account Details',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
-          <title>Welcome</title>
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #28a745; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+            .header { background-color: #10b981; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
             .content { background-color: #f8f9fa; padding: 30px; border-radius: 0 0 5px 5px; }
-            .button { display: inline-block; background-color: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
-            .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; font-size: 12px; color: #6c757d; text-align: center; }
+            .credentials { background-color: #fff; border: 1px solid #dee2e6; padding: 15px; border-radius: 5px; margin: 20px 0; }
+            .login-button { display: inline-block; background-color: #10b981; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; }
           </style>
         </head>
         <body>
           <div class="header">
-            <h1>Welcome!</h1>
+            <h1>Welcome to the Team!</h1>
           </div>
           <div class="content">
-            <h3>Hello ${username},</h3>
-            <p>Welcome to our platform! We're excited to have you on board.</p>
-            <p>You can now log in to your account and start exploring.</p>
-            <div style="text-align: center;">
-              <a href="${loginUrl}" class="button">Log In</a>
+            <h3>Hello${fullName ? ' ' + fullName : ''},</h3>
+            <p>Congratulations on your new role! Your employee account has been successfully created.</p>
+            <p>Below are your login credentials. We recommend logging in and changing your password immediately.</p>
+            
+            <div class="credentials">
+              <p><strong>Login URL:</strong> <a href="${loginUrl}">${loginUrl}</a></p>
+              <p><strong>Username:</strong> ${username}</p>
+              ${tempPassword ? `<p><strong>Temporary Password:</strong> ${tempPassword}</p>` : ''}
             </div>
-            <p>If you have any questions, feel free to reply to this email.</p>
-          </div>
-          <div class="footer">
-            <p>This is an automated message, please do not reply to this email.</p>
+            
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${loginUrl}" class="login-button">Login to Your Account</a>
+            </div>
           </div>
         </body>
         </html>
       `,
       text: `
-        Welcome to Our Service
+        Welcome to the Team!
         
-        Hello ${username},
+        Hello${fullName ? ' ' + fullName : ''},
         
-        Welcome to our platform! We're excited to have you on board.
+        Congratulations on your new role! Your employee account has been successfully created.
         
-        You can now log in to your account at:
-        ${loginUrl}
+        Login URL: ${loginUrl}
+        Username: ${username}
+        ${tempPassword ? `Temporary Password: ${tempPassword}` : ''}
         
-        If you have any questions, feel free to reply to this email.
+        We recommend logging in and changing your password immediately.
       `
     };
 
